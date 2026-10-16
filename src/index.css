@@ -1,0 +1,134 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&display=swap');
+@import "tailwindcss";
+
+:root {
+  --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  --font-heading: 'Playfair Display', ui-serif, Georgia, serif;
+
+  /* Luxury Editorial Palette */
+  --color-base: #0f0f0f;         /* Deep Charcoal */
+  --color-surface: #161616;     /* Soft Black */
+  --color-surface-2: #1c1c1c;   /* Elevated Surface */
+  --color-border: #262626;       /* Subtle Architectural Line */
+  --color-accent: #c5a35d;       /* Muted Champagne Gold */
+  --color-accent-hover: #d4b773;
+  --color-text: #e5e5e5;         /* Off-white / Silver */
+  --color-muted: #a3a3a3;        /* Soft Grey */
+  --color-muted-2: #737373;
+}
+
+@theme {
+  --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  --font-heading: 'Playfair Display', ui-serif, Georgia, serif;
+
+  /* Luxury Editorial Palette */
+  --color-base: #0f0f0f;
+  --color-surface: #161616;
+  --color-surface-2: #1c1c1c;
+  --color-border: #262626;
+  --color-accent: #c5a35d;
+  --color-accent-hover: #d4b773;
+  --color-text: #e5e5e5;
+  --color-muted: #a3a3a3;
+  --color-muted-2: #737373;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  background-color: #0f0f0f;
+  color: #e5e5e5;
+}
+
+body {
+  margin: 0;
+  background-color: #0f0f0f;
+  color: #e5e5e5;
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+h1 {
+  font-size: clamp(2.5rem, 6vw + 1rem, 5.5rem);
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+
+h2 {
+  font-size: clamp(1.75rem, 4vw + 0.5rem, 3rem);
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+}
+
+h3 {
+  font-size: clamp(1.125rem, 2vw + 0.25rem, 1.5rem);
+  font-weight: 600;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+  transition: color 0.3s ease;
+}
+
+::-webkit-scrollbar {
+  width: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-base);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-muted-2);
+}
+
+/* Grain Overlay */
+.grain {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.04;
+  background-image: url("https://grainy-gradients.vercel.app/noise.svg");
+}
+
+/* Luxury Animations */
+@keyframes reveal-up {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-reveal {
+  animation: reveal-up 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@keyframes cursor-blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
