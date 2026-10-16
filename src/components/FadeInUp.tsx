@@ -21,15 +21,3 @@ export function FadeInUp({ children, delay = 0, className = "" }: FadeInUpProps)
   );
 }
 
-export const staggerContainer = {
-  hidden: {},
-  visible: {
-    transition: { staggerChildren: 0.08 },
-  },
-};
-
-export const fadeInUpItem = {
-  hidden: { opacity: 0, y: 20 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" as const } },
-};
-

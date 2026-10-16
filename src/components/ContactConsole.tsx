@@ -17,7 +17,7 @@ import {
   RotateCcw,
 } from "lucide-react";
 import { personalInfo } from "../data/resume";
-import { showToast } from "./Toast";
+import { showToast } from "../utils/toast";
 
 const QUICK_TOPICS = [
   { label: "💼 Full-Time Role", subject: "Full-Time Engineering Opportunity" },

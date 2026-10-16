@@ -1,8 +1,8 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { ChevronDown, Filter, X, Sparkles, Workflow } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { projects } from "../data/resume";
-import { showToast } from "./Toast";
+import { showToast } from "../utils/toast";
 
 interface TechBadgeProps {
   label: string;
@@ -42,20 +42,16 @@ function ProjectRow({
   onSelectSkill,
   onOpenDeepDive,
 }: ProjectRowProps) {
-  const [expanded, setExpanded] = useState(false);
+  const [userExpanded, setUserExpanded] = useState<boolean | null>(null);
 
   // Automatically expand if matching the active skill filter
   const matchesFilter = activeSkillFilter
     ? project.tech.some(
         (t) => t.toLowerCase() === activeSkillFilter.toLowerCase()
       )
-    : true;
+    : false;
 
-  useEffect(() => {
-    if (activeSkillFilter && matchesFilter) {
-      setExpanded(true);
-    }
-  }, [activeSkillFilter, matchesFilter]);
+  const isExpanded = userExpanded ?? matchesFilter;
 
   const rowId = `project-${project.title.toLowerCase().replace(/\s+/g, "-")}`;
 
@@ -73,7 +69,7 @@ function ProjectRow({
           ? "opacity-40 border-border"
           : "border-border hover:border-accent"
       }`}
-      onClick={() => setExpanded(!expanded)}
+      onClick={() => setUserExpanded(!isExpanded)}
     >
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
         {/* Index and Title */}
@@ -105,10 +101,10 @@ function ProjectRow({
           </span>
           <div
             className={`w-10 h-10 rounded-full border border-border flex items-center justify-center transition-all duration-300 ${
-              expanded ? "bg-accent text-base" : "text-muted group-hover:border-accent"
+              isExpanded ? "bg-accent text-base" : "text-muted group-hover:border-accent"
             }`}
           >
-            <motion.div animate={{ rotate: expanded ? 180 : 0 }}>
+            <motion.div animate={{ rotate: isExpanded ? 180 : 0 }}>
               <ChevronDown size={16} />
             </motion.div>
           </div>
@@ -116,7 +112,7 @@ function ProjectRow({
       </div>
 
       <AnimatePresence>
-        {expanded && (
+        {isExpanded && (
           <motion.div
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}

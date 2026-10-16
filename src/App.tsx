@@ -85,7 +85,11 @@ function App() {
           <Education />
           <ContactConsole />
         </main>
-        <Footer />
+        <Footer
+          onOpenCommandPalette={() => setCommandPaletteOpen(true)}
+          onOpenResume={() => setResumeModalOpen(true)}
+          onNavigate={handleNavigate}
+        />
       </div>
 
       {/* Global Interactive Command Palette */}

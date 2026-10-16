@@ -39,10 +39,11 @@ export function ProjectModal({
   const currentProject: DetailedProject | undefined =
     currentIndex !== -1 ? detailedProjects[currentIndex] : detailedProjects[0];
 
-  // Reset tab on project switch
-  useEffect(() => {
+  const [prevProjectId, setPrevProjectId] = useState(projectId);
+  if (projectId !== prevProjectId) {
+    setPrevProjectId(projectId);
     setActiveTab("architecture");
-  }, [projectId]);
+  }
 
   // Keyboard navigation: Escape to close, arrows to switch
   useEffect(() => {

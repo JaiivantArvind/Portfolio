@@ -18,7 +18,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import { personalInfo, projects, experience, education } from "../data/resume";
-import { showToast } from "./Toast";
+import { showToast } from "../utils/toast";
 
 interface ResumeModalProps {
   isOpen: boolean;

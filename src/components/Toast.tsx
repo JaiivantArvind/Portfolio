@@ -1,20 +1,7 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { CheckCircle2, Info, X } from "lucide-react";
-
-export interface ToastMessage {
-  id: string;
-  text: string;
-  type?: "success" | "info";
-}
-
-export function showToast(text: string, type: "success" | "info" = "success") {
-  if (typeof window === "undefined") return;
-  const event = new CustomEvent("portfolio-toast", {
-    detail: { id: `${Date.now()}-${Math.random()}`, text, type },
-  });
-  window.dispatchEvent(event);
-}
+import type { ToastMessage } from "../utils/toast";
 
 export function ToastContainer() {
   const [toasts, setToasts] = useState<ToastMessage[]>([]);

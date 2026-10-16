@@ -21,7 +21,7 @@ import {
 } from "lucide-react";
 import { personalInfo, projects } from "../data/resume";
 import { techSkills } from "../data/techMatrixData";
-import { showToast } from "./Toast";
+import { showToast } from "../utils/toast";
 
 interface CommandItem {
   id: string;
@@ -305,19 +305,27 @@ export function CommandPalette({
     );
   });
 
-  // Focus management
-  useEffect(() => {
+  const [prevIsOpen, setPrevIsOpen] = useState(isOpen);
+  if (isOpen !== prevIsOpen) {
+    setPrevIsOpen(isOpen);
     if (isOpen) {
       setQuery("");
       setActiveIndex(0);
+    }
+  }
+
+  const [prevQuery, setPrevQuery] = useState(query);
+  if (query !== prevQuery) {
+    setPrevQuery(query);
+    setActiveIndex(0);
+  }
+
+  // Focus management
+  useEffect(() => {
+    if (isOpen) {
       setTimeout(() => inputRef.current?.focus(), 50);
     }
   }, [isOpen]);
-
-  // Keep active index within bounds
-  useEffect(() => {
-    setActiveIndex(0);
-  }, [query]);
 
   // Keyboard navigation
   useEffect(() => {
