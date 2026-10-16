@@ -4,7 +4,7 @@ import { Hero } from "./components/Hero";
 import { Projects } from "./components/Projects";
 import { Experience } from "./components/Experience";
 import { Education } from "./components/Education";
-import { TechStack } from "./components/TechStack";
+import { TechMatrix } from "./components/TechMatrix";
 import { Contact } from "./components/Contact";
 import { Footer } from "./components/Footer";
 import { ParallaxBackground } from "./components/ParallaxBackground";
@@ -17,6 +17,7 @@ function App() {
   const [asciiLensEnabled, setAsciiLensEnabled] = useState(true);
   const [asciiCharset, setAsciiCharset] = useState<"ascii" | "binary" | "blocks">("ascii");
   const [asciiRadius, setAsciiRadius] = useState<number>(0.14);
+  const [selectedSkill, setSelectedSkill] = useState<string | null>(null);
 
   const handleNavigate = (targetId: string) => {
     if (targetId === "home" || targetId === "top") {
@@ -25,6 +26,19 @@ function App() {
       const el = document.getElementById(targetId);
       if (el) {
         el.scrollIntoView({ behavior: "smooth" });
+      }
+    }
+  };
+
+  const handleJumpToProject = (projectTitle: string) => {
+    const rowId = `project-${projectTitle.toLowerCase().replace(/\s+/g, "-")}`;
+    const el = document.getElementById(rowId);
+    if (el) {
+      el.scrollIntoView({ behavior: "smooth" });
+    } else {
+      const projSection = document.getElementById("projects");
+      if (projSection) {
+        projSection.scrollIntoView({ behavior: "smooth" });
       }
     }
   };
@@ -61,8 +75,15 @@ function App() {
               );
             }}
           />
-          <TechStack />
-          <Projects />
+          <TechMatrix
+            selectedSkill={selectedSkill}
+            onSelectSkill={setSelectedSkill}
+            onJumpToProject={handleJumpToProject}
+          />
+          <Projects
+            activeSkillFilter={selectedSkill}
+            onSelectSkill={setSelectedSkill}
+          />
           <Experience />
           <Education />
           <Contact />
@@ -81,6 +102,10 @@ function App() {
         onSetAsciiCharset={setAsciiCharset}
         asciiRadius={asciiRadius}
         onSetAsciiRadius={setAsciiRadius}
+        onSelectSkill={(skill) => {
+          setSelectedSkill(skill);
+          handleNavigate("skills");
+        }}
       />
 
       {/* Global Toast Notification System */}

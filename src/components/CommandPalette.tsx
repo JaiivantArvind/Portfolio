@@ -19,11 +19,12 @@ import {
   Sliders,
 } from "lucide-react";
 import { personalInfo, projects } from "../data/resume";
+import { techSkills } from "../data/techMatrixData";
 import { showToast } from "./Toast";
 
 interface CommandItem {
   id: string;
-  category: "Navigation" | "Projects" | "Contact & Social" | "Commands";
+  category: "Navigation" | "Projects" | "Tech Matrix" | "Contact & Social" | "Commands";
   title: string;
   subtitle?: string;
   icon: React.ReactNode;
@@ -41,6 +42,7 @@ interface CommandPaletteProps {
   onSetAsciiCharset?: (charset: "ascii" | "binary" | "blocks") => void;
   asciiRadius?: number;
   onSetAsciiRadius?: (radius: number) => void;
+  onSelectSkill?: (skill: string) => void;
 }
 
 export function CommandPalette({
@@ -53,6 +55,7 @@ export function CommandPalette({
   onSetAsciiCharset,
   asciiRadius = 0.14,
   onSetAsciiRadius,
+  onSelectSkill,
 }: CommandPaletteProps) {
   const [query, setQuery] = useState("");
   const [activeIndex, setActiveIndex] = useState(0);
@@ -139,6 +142,20 @@ export function CommandPalette({
       action: () => {
         scrollTo("projects");
         showToast(`Navigated to ${p.title}`);
+      },
+    })),
+
+    // Tech Matrix Skills Quick-Jump & Inspector
+    ...techSkills.map((s) => ({
+      id: `skill-${s.id}`,
+      category: "Tech Matrix" as const,
+      title: s.name,
+      subtitle: `${s.tag} • ${s.level} [${s.projects.join(", ")}]`,
+      icon: <Cpu size={16} className="text-accent" />,
+      action: () => {
+        scrollTo("skills", "Skills");
+        if (onSelectSkill) onSelectSkill(s.name);
+        showToast(`Focused on ${s.name} in Tech Matrix & Projects`);
       },
     })),
 

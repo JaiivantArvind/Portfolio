@@ -53,18 +53,20 @@
 
 ---
 
-### Feature 4: Interactive Tech Matrix & Cross-Project Skill Graph
+### Feature 4: Interactive Tech Matrix & Cross-Project Skill Graph — ✅ *Built & Ready for Testing*
 * **Objective:** Elevate the tech stack section from static tags to a dynamic exploration tool showing how skills connect directly to delivered projects.
-* **Component Location:** `src/components/TechMatrix.tsx` (upgrading `TechStack.tsx`)
+* **Component Location:** `src/components/TechMatrix.tsx` & `src/data/techMatrixData.ts`
 * **Key Capabilities:**
   - **Domain Filter Tabs:**
-    - `All`, `Systems & Low-Level`, `Blockchain & Web3`, `AI & Machine Learning`, `Full Stack & Cloud`.
-  - **Interactive Cross-Referencing:**
-    - Hovering on any skill (e.g., *Solidity*, *8086 Assembly*, *PyTorch*, *React*) highlights which projects utilize it.
-    - Clicking a skill filters the visible projects in real time or highlights matching badges.
+    - `All Disciplines`, `Systems & Low-Level`, `Blockchain & Web3`, `AI & Machine Learning`, `Full Stack & Cloud` with live item counters.
+  - **Interactive Cross-Referencing & Skill Inspector:**
+    - Clicking any skill card reveals its architectural implementation note and connected projects.
+    - 1-click project jump chips navigate directly to the engineering case study.
+    - Synchronized with `Projects.tsx`: filters matching projects, highlights active badges, and provides an instant "Clear Filter" reset.
+  - **Command Palette Integration:**
+    - All 24 production technologies searchable via `Ctrl+K` with direct focus action.
   - **Skill Card Details:**
-    - Visual category icon, proficiency/context badge (e.g., "Core Focus", "Production Applied", "Architectural").
-    - Clean micro-animations on hover using Framer Motion spring physics.
+    - Visual category icon, proficiency/context badge (`Architectural`, `Production`, `Core Focus`, `Specialized`), and monospace metadata tags.
 
 ---
 
@@ -139,15 +141,14 @@ graph TD
 1. **Phase 1: Foundation & Global Interactive Effects**
    - [x] Implement Toast notification system (`ToastContext` or lightweight toast utility).
    - [x] Implement `CommandPalette.tsx` with keyboard hooks and quick search.
-   - [x] Configure and integrate `Asciify.tsx` with compact radius (`radius: 0.14`) over hero/key showcase zones (Ready for testing).
+   - [x] Configure and integrate `Asciify.tsx` with compact radius (`radius: 0.14`) over hero/key showcase zones.
 2. **Phase 2: Project Deep Dive & Tech Matrix**
+   - [x] Build `TechMatrix.tsx` with domain tabs, interactive skill graph, and bi-directional project filtering (Built & Ready for Testing).
    - [ ] Upgrade `src/data/resume.ts` with architecture flows and rich project metadata.
-   - [ ] Build `TechMatrix.tsx` with category filters and interactive project hover-linking (Next).
-   - Build `TechMatrix.tsx` with category filters and interactive project hover-linking.
-   - Build `ProjectModal.tsx` and `ArchitectureVisualizer.tsx` with interactive diagram nodes.
+   - [ ] Build `ProjectModal.tsx` and `ArchitectureVisualizer.tsx` with interactive diagram nodes (Next).
 3. **Phase 3: Resume Hub & Contact Console**
-   - Build `ResumeModal.tsx` with styled document preview and download/copy options.
-   - Upgrade `Contact.tsx` into `ContactConsole.tsx` with toast feedback and form animations.
+   - [ ] Build `ResumeModal.tsx` with styled document preview and download/copy options.
+   - [ ] Upgrade `Contact.tsx` into `ContactConsole.tsx` with toast feedback and form animations.
 4. **Phase 4: Integration & Quality Assurance**
-   - Connect all navigation and keyboard shortcuts throughout `App.tsx` and `Navbar.tsx`.
-   - Resolve existing TypeScript warnings/issues and test responsive design across mobile/desktop.
+   - [ ] Connect all navigation and keyboard shortcuts throughout `App.tsx` and `Navbar.tsx`.
+   - [ ] Resolve existing TypeScript warnings/issues and test responsive design across mobile/desktop.

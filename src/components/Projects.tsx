@@ -1,31 +1,76 @@
-import { useState } from "react";
-import { ChevronDown } from "lucide-react";
+import { useState, useEffect } from "react";
+import { ChevronDown, Filter, X, Sparkles } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { projects } from "../data/resume";
+import { showToast } from "./Toast";
 
-function TechBadge({ label }: { label: string }) {
+interface TechBadgeProps {
+  label: string;
+  isActive?: boolean;
+  onClick?: (e: React.MouseEvent) => void;
+}
+
+function TechBadge({ label, isActive, onClick }: TechBadgeProps) {
   return (
-    <span
-      className="inline-block px-2 py-1 border border-border text-[10px] uppercase tracking-wider text-muted font-medium"
-      style={{
-        backgroundColor: "rgba(255,255,255,0.02)",
-      }}
+    <button
+      type="button"
+      onClick={onClick}
+      className={`inline-block px-2.5 py-1 text-[10px] uppercase font-mono tracking-wider transition-all duration-200 cursor-pointer rounded ${
+        isActive
+          ? "border border-accent text-accent bg-accent/15 font-semibold shadow-sm"
+          : "border border-border text-muted hover:text-text hover:border-accent/50 bg-white/[0.02]"
+      }`}
+      title={`Filter by ${label}`}
     >
       {label}
-    </span>
+    </button>
   );
 }
 
-function ProjectRow({ project, index }: { project: (typeof projects)[number]; index: number }) {
+interface ProjectRowProps {
+  project: (typeof projects)[number];
+  index: number;
+  activeSkillFilter?: string | null;
+  onSelectSkill?: (skill: string | null) => void;
+}
+
+function ProjectRow({
+  project,
+  index,
+  activeSkillFilter,
+  onSelectSkill,
+}: ProjectRowProps) {
   const [expanded, setExpanded] = useState(false);
+
+  // Automatically expand if matching the active skill filter
+  const matchesFilter = activeSkillFilter
+    ? project.tech.some(
+        (t) => t.toLowerCase() === activeSkillFilter.toLowerCase()
+      )
+    : true;
+
+  useEffect(() => {
+    if (activeSkillFilter && matchesFilter) {
+      setExpanded(true);
+    }
+  }, [activeSkillFilter, matchesFilter]);
+
+  const rowId = `project-${project.title.toLowerCase().replace(/\s+/g, "-")}`;
 
   return (
     <motion.div
+      id={rowId}
       initial={{ opacity: 0, y: 15 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "150px" }}
       transition={{ duration: 0.5, delay: index * 0.08 }}
-      className="group relative py-12 border-b border-border hover:border-accent transition-colors duration-500 cursor-pointer"
+      className={`group relative py-10 border-b transition-all duration-500 cursor-pointer ${
+        activeSkillFilter && matchesFilter
+          ? "border-accent bg-accent/[0.02] px-4 -mx-4 rounded-xl my-2"
+          : activeSkillFilter && !matchesFilter
+          ? "opacity-40 border-border"
+          : "border-border hover:border-accent"
+      }`}
       onClick={() => setExpanded(!expanded)}
     >
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
@@ -34,9 +79,21 @@ function ProjectRow({ project, index }: { project: (typeof projects)[number]; in
           <span className="font-heading text-accent text-sm italic opacity-60 tabular-nums">
             0{index + 1}
           </span>
-          <h3 className="text-2xl md:text-4xl font-heading group-hover:translate-x-2 transition-transform duration-300">
-            {project.title}
-          </h3>
+          <div>
+            <div className="flex items-center gap-3">
+              <h3 className="text-2xl md:text-4xl font-heading group-hover:translate-x-2 transition-transform duration-300">
+                {project.title}
+              </h3>
+              {activeSkillFilter && matchesFilter && (
+                <span className="inline-flex items-center gap-1 px-2 py-0.5 text-[9px] uppercase font-mono tracking-wider bg-accent/20 text-accent rounded-full font-medium">
+                  <Sparkles size={10} /> Matches {activeSkillFilter}
+                </span>
+              )}
+            </div>
+            <p className="text-muted text-xs font-light mt-1 md:hidden">
+              {project.subtitle}
+            </p>
+          </div>
         </div>
 
         {/* Subtitle and Toggle */}
@@ -44,7 +101,11 @@ function ProjectRow({ project, index }: { project: (typeof projects)[number]; in
           <span className="text-muted text-sm font-light md:block hidden">
             {project.subtitle}
           </span>
-          <div className={`w-10 h-10 rounded-full border border-border flex items-center justify-center transition-all duration-300 ${expanded ? 'bg-accent text-base' : 'text-muted group-hover:border-accent'}`}>
+          <div
+            className={`w-10 h-10 rounded-full border border-border flex items-center justify-center transition-all duration-300 ${
+              expanded ? "bg-accent text-base" : "text-muted group-hover:border-accent"
+            }`}
+          >
             <motion.div animate={{ rotate: expanded ? 180 : 0 }}>
               <ChevronDown size={16} />
             </motion.div>
@@ -63,23 +124,45 @@ function ProjectRow({ project, index }: { project: (typeof projects)[number]; in
           >
             <div className="grid md:grid-cols-3 gap-12">
               <div className="md:col-span-1">
-                <p className="text-muted leading-relaxed font-light italic">
+                <p className="text-muted leading-relaxed font-light italic text-sm">
                   {project.description}
                 </p>
               </div>
               <div className="md:col-span-2">
                 <ul className="space-y-4">
                   {project.bullets.map((bullet, i) => (
-                    <li key={i} className="text-sm text-muted/80 flex gap-3">
-                      <span className="text-accent shrink-0">—</span>
-                      {bullet}
+                    <li key={i} className="text-sm text-muted/90 flex gap-3 leading-relaxed">
+                      <span className="text-accent shrink-0 font-bold">—</span>
+                      <span>{bullet}</span>
                     </li>
                   ))}
                 </ul>
-                <div className="flex flex-wrap gap-2 mt-8">
-                  {project.tech.map((t) => (
-                    <TechBadge key={t} label={t} />
-                  ))}
+                <div className="flex flex-wrap gap-2 mt-8 items-center">
+                  <span className="text-[10px] uppercase font-mono text-muted-2 mr-1">
+                    Tech Stack:
+                  </span>
+                  {project.tech.map((t) => {
+                    const isBadgeActive =
+                      activeSkillFilter?.toLowerCase() === t.toLowerCase();
+                    return (
+                      <TechBadge
+                        key={t}
+                        label={t}
+                        isActive={isBadgeActive}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          if (onSelectSkill) {
+                            onSelectSkill(isBadgeActive ? null : t);
+                            showToast(
+                              isBadgeActive
+                                ? "Reset skill filter"
+                                : `Focused on ${t} in Tech Matrix & Projects`
+                            );
+                          }
+                        }}
+                      />
+                    );
+                  })}
                 </div>
               </div>
             </div>
@@ -90,30 +173,84 @@ function ProjectRow({ project, index }: { project: (typeof projects)[number]; in
   );
 }
 
-export function Projects() {
+interface ProjectsProps {
+  activeSkillFilter?: string | null;
+  onSelectSkill?: (skill: string | null) => void;
+}
+
+export function Projects({ activeSkillFilter, onSelectSkill }: ProjectsProps) {
+  const visibleProjects = projects.filter((p) => {
+    if (!activeSkillFilter) return true;
+    return p.tech.some(
+      (t) => t.toLowerCase() === activeSkillFilter.toLowerCase()
+    );
+  });
+
   return (
-    <section id="projects" className="py-24 px-6">
+    <section id="projects" className="py-24 px-6 relative">
       <div className="max-w-5xl mx-auto">
-        <div className="mb-20 max-w-2xl">
+        <div className="mb-14 max-w-2xl">
           <p className="text-accent text-xs tracking-[0.3em] uppercase font-medium mb-4">
             Selected Works
           </p>
-          <h2 className="text-4xl md:text-6xl mb-6">
+          <h2 className="text-4xl md:text-6xl mb-6 font-heading">
             Engineering <br />
             <span className="italic font-light">with Precision.</span>
           </h2>
           <p className="text-muted text-lg font-light leading-relaxed">
-            A curated collection of projects focusing on blockchain provenance,
-            AI-driven automation, and low-level system architecture.
+            A curated collection of production engineering projects spanning
+            blockchain provenance, AI automation pipelines, and legacy systems
+            arithmetic.
           </p>
         </div>
 
+        {/* Active Skill Filter Banner */}
+        <AnimatePresence>
+          {activeSkillFilter && (
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              className="mb-8 p-3.5 rounded-xl bg-surface-2 border border-accent/40 flex items-center justify-between gap-4"
+            >
+              <div className="flex items-center gap-2.5 text-xs font-mono">
+                <Filter size={14} className="text-accent" />
+                <span className="text-muted">Filtering projects utilizing:</span>
+                <span className="text-accent font-semibold px-2 py-0.5 rounded bg-accent/10 border border-accent/30">
+                  {activeSkillFilter}
+                </span>
+                <span className="text-muted-2 hidden sm:inline">
+                  ({visibleProjects.length} of {projects.length} projects)
+                </span>
+              </div>
+
+              {onSelectSkill && (
+                <button
+                  type="button"
+                  onClick={() => onSelectSkill(null)}
+                  className="inline-flex items-center gap-1.5 text-xs font-mono text-muted hover:text-text px-2.5 py-1 rounded bg-surface border border-border hover:border-accent/40 transition-colors cursor-pointer"
+                >
+                  <X size={12} />
+                  <span>Show All ({projects.length})</span>
+                </button>
+              )}
+            </motion.div>
+          )}
+        </AnimatePresence>
+
         <div className="flex flex-col">
           {projects.map((p, i) => (
-            <ProjectRow key={p.title} project={p} index={i} />
+            <ProjectRow
+              key={p.title}
+              project={p}
+              index={i}
+              activeSkillFilter={activeSkillFilter}
+              onSelectSkill={onSelectSkill}
+            />
           ))}
         </div>
       </div>
     </section>
   );
 }
+
