@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { ChevronDown, Filter, X, Sparkles } from "lucide-react";
+import { ChevronDown, Filter, X, Sparkles, Workflow } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { projects } from "../data/resume";
 import { showToast } from "./Toast";
@@ -32,6 +32,7 @@ interface ProjectRowProps {
   index: number;
   activeSkillFilter?: string | null;
   onSelectSkill?: (skill: string | null) => void;
+  onOpenDeepDive?: (projectId: string) => void;
 }
 
 function ProjectRow({
@@ -39,6 +40,7 @@ function ProjectRow({
   index,
   activeSkillFilter,
   onSelectSkill,
+  onOpenDeepDive,
 }: ProjectRowProps) {
   const [expanded, setExpanded] = useState(false);
 
@@ -164,6 +166,26 @@ function ProjectRow({
                     );
                   })}
                 </div>
+
+                <div className="flex flex-wrap items-center justify-between gap-4 mt-8 pt-6 border-t border-border/50">
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      if (onOpenDeepDive) {
+                        onOpenDeepDive(project.title.toLowerCase().replace(/\s+/g, "-"));
+                      }
+                    }}
+                    className="inline-flex items-center gap-2 px-4 py-2 text-xs font-mono uppercase tracking-wider bg-accent text-base font-semibold hover:bg-accent-hover transition-colors rounded-lg cursor-pointer shadow-sm"
+                  >
+                    <Workflow size={13} />
+                    <span>System Architecture & Deep Dive</span>
+                  </button>
+
+                  <span className="text-[11px] font-mono text-muted-2 hidden sm:inline">
+                    Interactive pipeline, engineering challenges & code breakdown
+                  </span>
+                </div>
               </div>
             </div>
           </motion.div>
@@ -176,9 +198,14 @@ function ProjectRow({
 interface ProjectsProps {
   activeSkillFilter?: string | null;
   onSelectSkill?: (skill: string | null) => void;
+  onOpenDeepDive?: (projectId: string) => void;
 }
 
-export function Projects({ activeSkillFilter, onSelectSkill }: ProjectsProps) {
+export function Projects({
+  activeSkillFilter,
+  onSelectSkill,
+  onOpenDeepDive,
+}: ProjectsProps) {
   const visibleProjects = projects.filter((p) => {
     if (!activeSkillFilter) return true;
     return p.tech.some(
@@ -246,6 +273,7 @@ export function Projects({ activeSkillFilter, onSelectSkill }: ProjectsProps) {
               index={i}
               activeSkillFilter={activeSkillFilter}
               onSelectSkill={onSelectSkill}
+              onOpenDeepDive={onOpenDeepDive}
             />
           ))}
         </div>

@@ -5,19 +5,23 @@ import { Projects } from "./components/Projects";
 import { Experience } from "./components/Experience";
 import { Education } from "./components/Education";
 import { TechMatrix } from "./components/TechMatrix";
-import { Contact } from "./components/Contact";
+import { ContactConsole } from "./components/ContactConsole";
 import { Footer } from "./components/Footer";
 import { ParallaxBackground } from "./components/ParallaxBackground";
 import { CommandPalette } from "./components/CommandPalette";
+import { ProjectModal } from "./components/ProjectModal";
+import { ResumeModal } from "./components/ResumeModal";
 import { ToastContainer } from "./components/Toast";
 import "./index.css";
 
 function App() {
   const [commandPaletteOpen, setCommandPaletteOpen] = useState(false);
+  const [resumeModalOpen, setResumeModalOpen] = useState(false);
   const [asciiLensEnabled, setAsciiLensEnabled] = useState(true);
   const [asciiCharset, setAsciiCharset] = useState<"ascii" | "binary" | "blocks">("ascii");
   const [asciiRadius, setAsciiRadius] = useState<number>(0.14);
   const [selectedSkill, setSelectedSkill] = useState<string | null>(null);
+  const [activeProjectModal, setActiveProjectModal] = useState<string | null>(null);
 
   const handleNavigate = (targetId: string) => {
     if (targetId === "home" || targetId === "top") {
@@ -31,16 +35,7 @@ function App() {
   };
 
   const handleJumpToProject = (projectTitle: string) => {
-    const rowId = `project-${projectTitle.toLowerCase().replace(/\s+/g, "-")}`;
-    const el = document.getElementById(rowId);
-    if (el) {
-      el.scrollIntoView({ behavior: "smooth" });
-    } else {
-      const projSection = document.getElementById("projects");
-      if (projSection) {
-        projSection.scrollIntoView({ behavior: "smooth" });
-      }
-    }
+    setActiveProjectModal(projectTitle.toLowerCase().replace(/\s+/g, "-"));
   };
 
   useEffect(() => {
@@ -62,6 +57,7 @@ function App() {
         <Navbar
           onOpenCommandPalette={() => setCommandPaletteOpen(true)}
           onNavigate={handleNavigate}
+          onOpenResume={() => setResumeModalOpen(true)}
         />
         <main>
           <Hero
@@ -83,10 +79,11 @@ function App() {
           <Projects
             activeSkillFilter={selectedSkill}
             onSelectSkill={setSelectedSkill}
+            onOpenDeepDive={setActiveProjectModal}
           />
           <Experience />
           <Education />
-          <Contact />
+          <ContactConsole />
         </main>
         <Footer />
       </div>
@@ -106,6 +103,21 @@ function App() {
           setSelectedSkill(skill);
           handleNavigate("skills");
         }}
+        onOpenProjectModal={setActiveProjectModal}
+        onOpenResume={() => setResumeModalOpen(true)}
+      />
+
+      {/* Interactive Project Deep Dive Modal */}
+      <ProjectModal
+        projectId={activeProjectModal}
+        onClose={() => setActiveProjectModal(null)}
+        onSelectProject={setActiveProjectModal}
+      />
+
+      {/* In-Browser Resume Hub & PDF Modal */}
+      <ResumeModal
+        isOpen={resumeModalOpen}
+        onClose={() => setResumeModalOpen(false)}
       />
 
       {/* Global Toast Notification System */}

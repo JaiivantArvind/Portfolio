@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Menu, X, Search } from "lucide-react";
+import { Menu, X, Search, FileText } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { personalInfo } from "../data/resume";
 
@@ -14,9 +14,10 @@ const links = [
 interface NavbarProps {
   onOpenCommandPalette?: () => void;
   onNavigate?: (targetId: string, label?: string) => void;
+  onOpenResume?: () => void;
 }
 
-export function Navbar({ onOpenCommandPalette, onNavigate }: NavbarProps) {
+export function Navbar({ onOpenCommandPalette, onNavigate, onOpenResume }: NavbarProps) {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -68,6 +69,18 @@ export function Navbar({ onOpenCommandPalette, onNavigate }: NavbarProps) {
               </li>
             ))}
           </ul>
+
+          {/* Resume Hub Trigger Pill */}
+          {onOpenResume && (
+            <button
+              onClick={onOpenResume}
+              className="flex items-center gap-1.5 px-2.5 py-1 text-[11px] font-mono uppercase tracking-wider text-accent hover:text-accent-hover bg-accent/10 hover:bg-accent/20 border border-accent/40 rounded-lg transition-all duration-300 cursor-pointer shadow-sm font-semibold"
+              title="Open Resume Hub & PDF"
+            >
+              <FileText size={12} />
+              <span>Resume</span>
+            </button>
+          )}
 
           {/* Command Palette Trigger Pill */}
           {onOpenCommandPalette && (
@@ -132,6 +145,19 @@ export function Navbar({ onOpenCommandPalette, onNavigate }: NavbarProps) {
                   {l.label}
                 </a>
               ))}
+              {onOpenResume && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setMobileOpen(false);
+                    onOpenResume();
+                  }}
+                  className="flex items-center gap-2 text-sm uppercase tracking-widest text-accent hover:text-accent-hover transition-colors text-left cursor-pointer font-semibold"
+                >
+                  <FileText size={16} />
+                  <span>Curriculum Vitae / Resume</span>
+                </button>
+              )}
               {onOpenCommandPalette && (
                 <button
                   onClick={() => {

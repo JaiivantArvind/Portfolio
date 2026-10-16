@@ -35,7 +35,7 @@
 
 ---
 
-### Feature 2: Interactive "Project Deep Dive" Modal & Architecture Visualizer
+### Feature 2: Interactive "Project Deep Dive" Modal & Architecture Visualizer — ✅ *Built & Ready for Testing*
 * **Objective:** Replace simple bullet lists with an immersive, high-signal project breakdown showcasing real engineering complexity (DOSBox assembly patchers, smart contract state machines, computer vision pipelines).
 * **Component Location:** `src/components/ProjectModal.tsx` & `src/components/ArchitectureVisualizer.tsx`
 * **Trigger:** Clicking a "Deep Dive / Architecture" button or clicking on a project row in `Projects.tsx`.
@@ -70,7 +70,7 @@
 
 ---
 
-### Feature 5: Quick Resume Hub with Instant In-Browser Preview & Multiple Formats
+### Feature 5: Quick Resume Hub with Instant In-Browser Preview & Multiple Formats — ✅ *Built & Ready for Testing*
 * **Objective:** Allow recruiters and hiring managers to review a complete, beautifully typeset 1-page resume directly in the browser without losing their place, with instant download options.
 * **Component Location:** `src/components/ResumeModal.tsx`
 * **Key Capabilities:**
@@ -84,7 +84,7 @@
 
 ---
 
-### Feature 6: Glassmorphic Contact & Quick Message Console
+### Feature 6: Glassmorphic Contact & Quick Message Console — ✅ *Built & Ready for Testing*
 * **Objective:** Provide a frictionless, ultra-modern contact experience combining an editorial form with terminal aesthetics and instant feedback.
 * **Component Location:** `src/components/ContactConsole.tsx` (enhancing `Contact.tsx`)
 * **Key Capabilities:**
@@ -143,12 +143,12 @@ graph TD
    - [x] Implement `CommandPalette.tsx` with keyboard hooks and quick search.
    - [x] Configure and integrate `Asciify.tsx` with compact radius (`radius: 0.14`) over hero/key showcase zones.
 2. **Phase 2: Project Deep Dive & Tech Matrix**
-   - [x] Build `TechMatrix.tsx` with domain tabs, interactive skill graph, and bi-directional project filtering (Built & Ready for Testing).
-   - [ ] Upgrade `src/data/resume.ts` with architecture flows and rich project metadata.
-   - [ ] Build `ProjectModal.tsx` and `ArchitectureVisualizer.tsx` with interactive diagram nodes (Next).
+   - [x] Build `TechMatrix.tsx` with domain tabs, interactive skill graph, and bi-directional project filtering.
+   - [x] Create `src/data/projectDetails.ts` with deep architecture flows, subsystems, and code snippets.
+   - [x] Build `ProjectModal.tsx` and `ArchitectureVisualizer.tsx` with interactive diagram nodes and continuous project cycling (Built & Ready for Testing).
 3. **Phase 3: Resume Hub & Contact Console**
-   - [ ] Build `ResumeModal.tsx` with styled document preview and download/copy options.
-   - [ ] Upgrade `Contact.tsx` into `ContactConsole.tsx` with toast feedback and form animations.
+   - [x] Build `ResumeModal.tsx` with styled document preview, official PDF download, and ATS plain text copy (Built & Ready for Testing).
+   - [x] Upgrade `Contact.tsx` into `ContactConsole.tsx` with toast feedback and form animations (Built & Ready for Testing).
 4. **Phase 4: Integration & Quality Assurance**
    - [ ] Connect all navigation and keyboard shortcuts throughout `App.tsx` and `Navbar.tsx`.
    - [ ] Resolve existing TypeScript warnings/issues and test responsive design across mobile/desktop.

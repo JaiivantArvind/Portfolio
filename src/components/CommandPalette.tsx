@@ -17,6 +17,7 @@ import {
   Sparkles,
   Eye,
   Sliders,
+  FileText,
 } from "lucide-react";
 import { personalInfo, projects } from "../data/resume";
 import { techSkills } from "../data/techMatrixData";
@@ -43,6 +44,8 @@ interface CommandPaletteProps {
   asciiRadius?: number;
   onSetAsciiRadius?: (radius: number) => void;
   onSelectSkill?: (skill: string) => void;
+  onOpenProjectModal?: (projectId: string) => void;
+  onOpenResume?: () => void;
 }
 
 export function CommandPalette({
@@ -56,6 +59,8 @@ export function CommandPalette({
   asciiRadius = 0.14,
   onSetAsciiRadius,
   onSelectSkill,
+  onOpenProjectModal,
+  onOpenResume,
 }: CommandPaletteProps) {
   const [query, setQuery] = useState("");
   const [activeIndex, setActiveIndex] = useState(0);
@@ -140,8 +145,14 @@ export function CommandPalette({
       subtitle: `${p.subtitle} • ${p.tech.slice(0, 3).join(", ")}`,
       icon: <FolderGit2 size={16} className="text-muted" />,
       action: () => {
-        scrollTo("projects");
-        showToast(`Navigated to ${p.title}`);
+        if (onOpenProjectModal) {
+          onClose();
+          onOpenProjectModal(p.title.toLowerCase().replace(/\s+/g, "-"));
+          showToast(`Opened deep dive: ${p.title}`);
+        } else {
+          scrollTo("projects");
+          showToast(`Navigated to ${p.title}`);
+        }
       },
     })),
 
@@ -268,6 +279,17 @@ export function CommandPalette({
       action: () => {
         showToast(`${personalInfo.name} • ${personalInfo.role} (${personalInfo.location})`);
         onClose();
+      },
+    },
+    {
+      id: "act-resume",
+      category: "Commands",
+      title: "View Curriculum Vitae / Resume",
+      subtitle: "In-browser publication layout, official PDF & ATS markdown",
+      icon: <FileText size={16} className="text-accent" />,
+      action: () => {
+        onClose();
+        if (onOpenResume) onOpenResume();
       },
     },
   ];
