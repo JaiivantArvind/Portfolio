@@ -209,7 +209,7 @@ export function Hero({ asciiLensEnabled = true, onToggleAsciiLens }: HeroProps) 
       </motion.div>
 
       <span className="sr-only">
-        Education: {education.degree}, {education.institution} ({education.period}).
+        Education: {education.degree}, {education.institution} ({education.period}), CGPA: {education.cgpa}.
       </span>
     </motion.div>
   );

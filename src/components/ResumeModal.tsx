@@ -15,6 +15,7 @@ import {
   Briefcase,
   GraduationCap,
   Sparkles,
+  Phone,
 } from "lucide-react";
 import { personalInfo, projects, experience, education } from "../data/resume";
 import { showToast } from "../utils/toast";
@@ -26,50 +27,49 @@ interface ResumeModalProps {
 
 const markdownResumeText = `# Jaiivant Arvind
 ${personalInfo.role} | ${personalInfo.location}
-Email: ${personalInfo.email}
+Phone: ${personalInfo.phone} | Email: ${personalInfo.email}
 GitHub: ${personalInfo.github} | LinkedIn: ${personalInfo.linkedin}
 
-## PROFESSIONAL SUMMARY
-Full-Stack Developer specializing in low-level systems (8086 Assembly, Headless DOSBox), decentralized Web3 protocols (Solidity, UUPS ERC-1155, The Graph), and computer vision pipelines (PyTorch, OpenCV). Experience building high-performance hybrid systems, upgradeable smart contracts, and real-time deep learning classifiers.
-
 ## EDUCATION
+${education.institution}, Vellore
 ${education.degree} (${education.period})
-${education.institution}, ${education.location}
+CGPA: ${education.cgpa}
 
-## CORE TECHNICAL COMPETENCIES
-- Systems & Low-Level: 8086 Assembly (MASM), Headless DOSBox, Byte-Signature Binary Patching, Multi-precision Math
-- Blockchain & Web3: Solidity, UUPS Upgradeable Smart Contracts, ERC-1155, The Graph (Subgraphs), Hardhat, IPFS, Gnosis Safe
-- AI & Computer Vision: PyTorch, MobileNetV3, OpenCV (Otsu & Lanczos), Gemini 2.5 Flash and 2.5 Flash Lite, TF-IDF, NLP
-- Full Stack & Cloud: React 19, Next.js, TypeScript, Vite, Tailwind CSS, FastAPI, Flask, Supabase (PostgreSQL & RLS), Git, Vercel
-
-## SELECTED ENGINEERING PROJECTS
-### SupplyTrace — Decentralized Supply Chain Provenance (Solidity, React, Hardhat, The Graph, IPFS)
-- Architected a UUPS-upgradeable ERC-1155 smart contract with role-gated state machine (Manufacturer → Distributor → Retailer).
-- Engineered a high-performance indexing layer using The Graph (subgraph), reducing frontend data retrieval latency versus direct RPC calls (>4.5 s to sub-200 ms, per the project breakdown).
-- Implemented multi-sig governance via Gnosis Safe, OpenZeppelin AccessControl, and a Circuit Breaker (Pausable) for emergency recalls.
-- Validated logic through 60+ unit tests on Ethereum Sepolia testnet.
-
-### TradeGate — AI-Powered International Tariff Engine (8086 Assembly, Python, Flask, Gemini 2.5 Flash and 2.5 Flash Lite, React, TypeScript)
-- Executes legacy 8086 MASM assembly engine inside headless DOSBox environment for trade duty arithmetic.
-- Engineered a byte-signature binary patcher in Python that scans byte signatures in compiled .EXE binaries to inject rates before execution.
-- Developed custom 32-bit math library in Assembly to bypass 16-bit DIV overflow, handling cargo valuations over $65,535.
-- Integrated Google Gemini AI (Gemini 2.5 Flash and 2.5 Flash Lite) with graceful fallback to compiled assembly lookup tables.
-
-### TamilVision — Real-time 156-Class Unicode Tamil OCR & Vision (PyTorch, FastAPI, OpenCV, Next.js, Three.js)
-- Architected OCR engine using modified MobileNetV3-Small classifying 156 Unicode Tamil characters at sub-50ms latency.
-- Engineered a 12-step OpenCV preprocessing pipeline (Otsu adaptive thresholding, Smart Inversion, Lanczos bicubic resampling).
-- Developed custom Grayscale Input Adapter, collapsing RGB ImageNet weights to reduce convolutional layer VRAM footprint by 66%.
-
-### TalentFit — Dual-Scoring Semantic Screening Engine (Python, Flask, Gemini AI, React, Tailwind CSS)
-- Formulated dual-scoring algorithm: TF-IDF keyword extraction + Gemini dense vector embeddings.
-- Streamlined document extraction across PDF, DOCX, TXT with automated identification of technical skill clusters in <3s.
-
-### Mentora — Full-Stack Collaborative Mentorship Platform (React, Vite, Tailwind CSS, Supabase, Vercel)
-- Architected SPA with Supabase PostgreSQL and Row-Level Security (RLS) policies for multi-tenant data isolation.
-- Implemented real-time WebSocket messaging and session booking calendar.
+## TECHNICAL SKILLS
+- Languages: Java, JavaScript, TypeScript, C, C++, Python, SQL, Solidity, 8086 Assembly
+- Backend & Web: React, Next.js, Node.js, Flask, FastAPI, Vite, Tailwind CSS, Three.js, ERC-1155 Smart Contracts
+- Databases & Tools: PostgreSQL, Supabase, DBeaver, Docker, Git, Apache, Hardhat, Vercel, AWS, Azure, Figma, Excel
+- ML & Data: PyTorch, OpenCV, Pandas, LLM Integration, Computer Vision, NLP, Semantic Embeddings
 
 ## EXPERIENCE
-${experience.map((e) => `- ${e.role} — ${e.org} (${e.period})\n${e.bullets.map((b) => `  ${b}`).join("\n")}`).join("\n")}
+### Software Development Intern | Stayright Consultancy Private Limited (AceHours) (Jun 2026 – Sep 2026)
+- Developed and integrated machine learning components into a live production application, contributing to backend logic and database query optimization.
+- Designed and maintained structured database schemas and backend APIs, ensuring data integrity and operational reliability in a professional development environment.
+- Engineered a new feature end-to-end for a live production application, from requirement analysis through backend implementation and deployment, collaborating with senior engineers through code reviews, sprint planning and production deployment practices.
+
+### Robotics & Electronics Intern | Robomations, Bangalore (Apr 2022 – May 2022)
+- Engineered hardware systems including an Edge Detector, Line Follower robot, and Battle Bot using Arduino Uno, L293D/L298N motor drivers, and NRF24L01 wireless RF modules.
+- Designed and rendered a 3D architectural model in SketchUp with a VR-viewable video walkthrough, leveraging tools like Blender, Gravity Sketch, and AutoCAD.
+- Applied core electronics fundamentals — 555 IC circuits, logic gates, LDR/ultrasonic sensors, and breadboard prototyping in a hands-on production environment.
+
+## PROJECTS
+### Mentora — Full-Stack Mentorship Platform (React, Vite, Tailwind CSS, Supabase, Vercel)
+- A full-stack mentorship platform connecting students and mentors with real-time database updates, secure authentication, and a CI/CD-deployed production environment.
+- Architected a responsive SPA using React, Vite, and Tailwind CSS with Supabase BaaS handling authentication and real-time database updates, ensuring scalable and secure data management.
+- Deployed via Vercel with a full CI/CD pipeline, implementing dynamic routing and state management for seamless multi-role user flows in a live production environment.
+
+### SupplyTrace — Decentralized Supply Chain Provenance (Solidity, React, Hardhat, The Graph, IPFS)
+- A blockchain-based provenance system on Ethereum Sepolia using UUPS-upgradeable smart contracts and a role-gated state machine for tamper-proof product tracking across a 3-tier supply chain.
+- Architected a UUPS-upgradeable ERC-1155 smart contract ecosystem with a Manufacturer → Distributor → Retailer state machine, enforcing tamper-proof on-chain provenance with multi-sig governance via Gnosis Safe and OpenZeppelin AccessControl.
+- Engineered a high-performance indexing layer using The Graph subgraph for real-time custody transfers, validated through 60+ unit tests ensuring stable state transitions across all role transitions.
+
+### TalentFit — Intelligent Screening Engine (Python, Flask, Gemini Embeddings, React, Tailwind CSS)
+- An intelligent resume screening engine combining keyword matching and Gemini semantic embeddings to evaluate resume-to-JD alignment with contextual nuance.
+- Architected a dual-scoring engine (40% keyword / 60% semantic) with a multi-format parsing pipeline (PDF, DOCX, TXT) auto-identifying 35+ technical skills.
+- Optimized inference to sub-3-second processing per document with a React 18 dashboard featuring color-coded skill gap visualizations.
+
+## AWARDS AND CERTIFICATES
+- Certifications: Oracle Cloud Infrastructure 2026 Generative AI Professional
 `;
 
 export function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
@@ -240,6 +240,14 @@ export function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
                 {/* Contact Pills */}
                 <div className="flex flex-wrap items-center gap-3 pt-2 text-xs font-mono text-muted">
                   <a
+                    href={`tel:${personalInfo.phone}`}
+                    className="hover:text-accent transition-colors flex items-center gap-1"
+                  >
+                    <Phone size={12} className="text-accent" />
+                    <span>{personalInfo.phone}</span>
+                  </a>
+                  <span>•</span>
+                  <a
                     href={`mailto:${personalInfo.email}`}
                     className="hover:text-accent transition-colors flex items-center gap-1"
                   >
@@ -264,23 +272,9 @@ export function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
                     className="hover:text-accent transition-colors flex items-center gap-1"
                   >
                     <Linkedin size={12} className="text-accent" />
-                    <span>linkedin.com/in/jaiivant-arvind</span>
+                    <span>linkedin.com/in/jaiivant-arvind-570bab3a5</span>
                   </a>
                 </div>
-              </div>
-
-              {/* Section: Professional Summary */}
-              <div className="space-y-2">
-                <h3 className="text-xs uppercase font-mono tracking-[0.2em] text-accent font-semibold flex items-center gap-2">
-                  <span className="w-1.5 h-1.5 rounded-full bg-accent" />
-                  Professional Summary
-                </h3>
-                <p className="text-xs sm:text-sm text-text/90 font-light leading-relaxed">
-                  Full-Stack Developer specializing in low-level systems (8086
-                  Assembly, Headless DOSBox), decentralized Web3 protocols (Solidity, UUPS ERC-1155,
-                  The Graph), and computer vision pipelines (PyTorch, OpenCV). Experience building high-performance hybrid systems, upgradeable smart contracts,
-                  and real-time deep learning classifiers.
-                </p>
               </div>
 
               {/* Section: Education */}
@@ -298,9 +292,26 @@ export function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
                       {education.degree}
                     </p>
                   </div>
-                  <span className="text-xs font-mono text-muted-2">
-                    {education.period} • {education.location}
-                  </span>
+                  <div className="flex flex-col sm:items-end gap-1">
+                    <span className="text-xs font-mono text-muted-2">
+                      {education.period}
+                    </span>
+                    <span className="text-xs font-mono text-accent font-semibold">
+                      CGPA: {education.cgpa}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Section: Certifications */}
+              <div className="space-y-2">
+                <h3 className="text-xs uppercase font-mono tracking-[0.2em] text-accent font-semibold flex items-center gap-2">
+                  <Sparkles size={14} className="text-accent" />
+                  Certifications
+                </h3>
+                <div className="p-3 rounded-lg bg-surface border border-border/80 flex flex-col sm:flex-row sm:items-center justify-between gap-1 text-xs">
+                  <span className="font-semibold text-text">Oracle Cloud Infrastructure 2026 Generative AI Professional</span>
+                  <span className="font-mono text-muted-2 text-[11px]">Oracle • 2026</span>
                 </div>
               </div>
 
@@ -308,42 +319,42 @@ export function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
               <div className="space-y-3">
                 <h3 className="text-xs uppercase font-mono tracking-[0.2em] text-accent font-semibold flex items-center gap-2">
                   <Sparkles size={14} className="text-accent" />
-                  Core Technical Competencies
+                  Technical Skills
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs font-mono">
                   <div className="p-3 rounded-lg bg-surface border border-border/80 space-y-1">
                     <span className="text-accent font-semibold uppercase text-[10px] block">
-                      Systems & Low-Level:
+                      Languages:
                     </span>
                     <span className="text-muted leading-relaxed text-[11px]">
-                      8086 Assembly (MASM), Headless DOSBox, Byte-Signature Binary Patching, Multi-precision Math
+                      Java, JavaScript, TypeScript, C, C++, Python, SQL, Solidity, 8086 Assembly
                     </span>
                   </div>
 
                   <div className="p-3 rounded-lg bg-surface border border-border/80 space-y-1">
                     <span className="text-accent font-semibold uppercase text-[10px] block">
-                      Blockchain & Web3:
+                      Backend & Web:
                     </span>
                     <span className="text-muted leading-relaxed text-[11px]">
-                      Solidity, UUPS Upgradeable ERC-1155, The Graph (Subgraphs), Hardhat, IPFS, Gnosis Safe
+                      React, Next.js, Node.js, Flask, FastAPI, Vite, Tailwind CSS, Three.js, ERC-1155 Smart Contracts
                     </span>
                   </div>
 
                   <div className="p-3 rounded-lg bg-surface border border-border/80 space-y-1">
                     <span className="text-accent font-semibold uppercase text-[10px] block">
-                      AI & Computer Vision:
+                      Databases & Tools:
                     </span>
                     <span className="text-muted leading-relaxed text-[11px]">
-                      PyTorch, MobileNetV3, OpenCV (Otsu & Lanczos), Gemini 2.5 Flash and 2.5 Flash Lite, TF-IDF, NLP
+                      PostgreSQL, Supabase, DBeaver, Docker, Git, Apache, Hardhat, Vercel, AWS, Azure, Figma, Excel
                     </span>
                   </div>
 
                   <div className="p-3 rounded-lg bg-surface border border-border/80 space-y-1">
                     <span className="text-accent font-semibold uppercase text-[10px] block">
-                      Full Stack & Cloud:
+                      ML & Data:
                     </span>
                     <span className="text-muted leading-relaxed text-[11px]">
-                      React 19, Next.js, TypeScript, Vite, Tailwind CSS, FastAPI, Flask, Supabase, Git
+                      PyTorch, OpenCV, Pandas, LLM Integration, Computer Vision, NLP, Semantic Embeddings
                     </span>
                   </div>
                 </div>

@@ -33,7 +33,12 @@ function App() {
   };
 
   const handleJumpToProject = (projectTitle: string) => {
-    setActiveProjectModal(projectTitle.toLowerCase().replace(/\s+/g, "-"));
+    const lower = projectTitle.toLowerCase();
+    if (lower.includes("internship") || lower.includes("stayright") || lower.includes("robomations")) {
+      handleNavigate("experience");
+    } else {
+      setActiveProjectModal(lower.replace(/\s+/g, "-"));
+    }
   };
 
   useEffect(() => {

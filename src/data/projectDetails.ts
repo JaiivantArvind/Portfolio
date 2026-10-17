@@ -328,18 +328,18 @@ function transferBatch(uint256 tokenId, address to, uint256 quantity) external w
 
   // ── 4. TalentFit ──
   {
-    id: "ai-resume-analyzer",
+    id: "talentfit",
     title: "TalentFit",
-    subtitle: "Dual-Scoring Semantic Screening Engine",
+    subtitle: "Intelligent Screening Engine",
     category: "Machine Learning & NLP",
     description:
-      "An intelligent resume-to-job-description evaluation engine pairing TF-IDF keyword extraction with Gemini semantic embeddings for nuanced contextual alignment.",
-    tech: ["Python", "Flask", "Gemini AI", "React", "Tailwind CSS", "NLP"],
+      "An intelligent resume screening engine combining keyword matching and Gemini semantic embeddings to evaluate resume-to-JD alignment with contextual nuance.",
+    tech: ["Python", "Flask", "Gemini Embeddings", "React", "Tailwind CSS"],
     metrics: [
-      { label: "Scoring Weight", value: "Keyword + Semantic", detail: "TF-IDF keyword matching + Gemini dense vector embeddings" },
-      { label: "Memory Footprint", value: "~300MB", detail: "On-demand Gemini API embeddings and lightweight Flask microservice" },
-      { label: "Inference Speed", value: "<3.0s", detail: "Multi-page document parsing and vector scoring" },
-      { label: "Taxonomy Size", value: "35+ Clusters", detail: "Identifies core engineering competencies" },
+      { label: "Scoring Weight", value: "40% / 60%", detail: "Dual-scoring engine: 40% keyword frequency / 60% Gemini semantic embeddings" },
+      { label: "Inference Speed", value: "<3.0s", detail: "Optimized inference to sub-3-second processing per document" },
+      { label: "Skill Taxonomy", value: "35+ Skills", detail: "Multi-format parsing pipeline (PDF, DOCX, TXT) auto-identifying technical skills" },
+      { label: "Visualization", value: "React 18", detail: "Interactive dashboard featuring color-coded skill gap visualizations" },
     ],
     architectureNodes: [
       {
@@ -355,17 +355,17 @@ function transferBatch(uint256 tokenId, address to, uint256 quantity) external w
         id: "ra-parser",
         step: 2,
         title: "Document Ingestion",
-        tech: "pypdf / python-docx",
+        tech: "Python Parsing Pipeline",
         role: "Multi-format document parsing and text normalization",
         type: "pipeline",
-        details: "Extracts raw text streams across PDF, DOCX, and TXT files, stripping formatting noise and tokenizing sections.",
+        details: "Extracts raw text streams across PDF, DOCX, and TXT files, auto-identifying 35+ technical skills and tokenizing sections.",
       },
       {
         id: "ra-heuristic",
         step: 3,
-        title: "TF-IDF Engine",
-        tech: "Scikit-Learn NLP",
-        role: "Exact and n-gram keyword frequency scoring",
+        title: "Keyword Matching Engine",
+        tech: "NLP Tokenizer",
+        role: "40% keyword frequency and technical skill cluster scoring",
         type: "compute",
         details: "Measures domain terminology density and presence of must-have toolchains against the job requirement.",
       },
@@ -374,9 +374,9 @@ function transferBatch(uint256 tokenId, address to, uint256 quantity) external w
         step: 4,
         title: "Gemini Semantic Embeddings",
         tech: "Google Gemini",
-        role: "Contextual semantic embedding alignment",
+        role: "60% contextual semantic embedding alignment",
         type: "ai",
-        details: "Projects resume and job description text into dense vector space using Gemini text-embedding-004, computing cosine similarity for conceptual match.",
+        details: "Projects resume and job description text into dense vector space using Gemini embeddings, computing cosine similarity for conceptual match.",
         codeSnippet: `def calculate_semantic_score(resume_text, job_desc):
     res_embed = genai.embed_content(
         model="models/text-embedding-004", content=resume_text[:3000], task_type="clustering"
@@ -390,18 +390,18 @@ function transferBatch(uint256 tokenId, address to, uint256 quantity) external w
     ],
     breakthroughs: [
       {
-        title: "Dual-Scoring Heuristic: TF-IDF + Gemini Vector Embeddings",
+        title: "Dual-Scoring Architecture: 40% Keyword / 60% Semantic",
         problem:
-          "Keyword-only screening misses strong candidates who describe equivalent skills in different terms. Semantic-only screening can be fooled by buzzwords that lack specific hard skill mentions.",
+          "Keyword-only screening misses strong candidates who describe equivalent skills in different terms. Semantic-only screening can be fooled by generic prose that lacks specific hard skill mentions.",
         solution:
-          "Formulated a balanced dual-scoring algorithm combining keyword frequency matching with Google Gemini dense vector embeddings (text-embedding-004).",
+          "Architected a dual-scoring engine combining 40% keyword frequency matching with 60% Gemini semantic embeddings to evaluate resume-to-JD alignment with contextual nuance.",
         language: "python",
       },
     ],
     keyOutcomes: [
-      "Designed for sub-3-second document evaluation.",
-      "Compact memory footprint via cloud-based Gemini embedding inference.",
-      "Clear, actionable feedback highlighting candidate skill gaps.",
+      "Architected a dual-scoring engine (40% keyword / 60% semantic) with a multi-format parsing pipeline (PDF, DOCX, TXT) auto-identifying 35+ technical skills.",
+      "Optimized inference to sub-3-second processing per document with a React 18 dashboard featuring color-coded skill gap visualizations.",
+      "Lightweight Flask microservice with contextual Gemini semantic embedding analysis.",
     ],
   },
 
@@ -409,16 +409,16 @@ function transferBatch(uint256 tokenId, address to, uint256 quantity) external w
   {
     id: "mentora",
     title: "Mentora",
-    subtitle: "Full-Stack Collaborative Mentorship Platform",
+    subtitle: "Full-Stack Mentorship Platform",
     category: "Full Stack & Cloud",
     description:
-      "A responsive, full-stack mentorship platform connecting students with mentors, featuring real-time chat and Supabase Row-Level Security.",
+      "A full-stack mentorship platform connecting students and mentors with real-time database updates, secure authentication, and a CI/CD-deployed production environment.",
     tech: ["React", "Vite", "Tailwind CSS", "Supabase", "Vercel"],
     metrics: [
-      { label: "Frontend Speed", value: "Vite SPA", detail: "Client-side routing with no full page reloads" },
-      { label: "Data Layer", value: "Supabase BaaS", detail: "PostgreSQL with strict Row-Level Security policies" },
-      { label: "Communication", value: "Real-time", detail: "WebSocket event listeners for instant mentorship messaging" },
-      { label: "Deployment", value: "Vercel", detail: "Continuous deployment from Git to Vercel" },
+      { label: "Frontend Speed", value: "Vite SPA", detail: "Client-side routing with responsive multi-role user flows" },
+      { label: "Data Layer", value: "Supabase BaaS", detail: "PostgreSQL with authentication and real-time database updates" },
+      { label: "Security", value: "Row-Level", detail: "Strict PostgreSQL Row-Level Security ensuring scalable data management" },
+      { label: "Deployment", value: "Vercel CI/CD", detail: "Full continuous deployment pipeline to live production environment" },
     ],
     architectureNodes: [
       {
@@ -471,9 +471,9 @@ USING (
       },
     ],
     keyOutcomes: [
-      "Real-time chat with optimistic client updates.",
-      "Data isolation enforced by database-level Row-Level Security policies.",
-      "Single-page navigation without full page reloads.",
+      "Architected a responsive SPA using React, Vite, and Tailwind CSS with Supabase BaaS handling authentication and real-time database updates, ensuring scalable and secure data management.",
+      "Deployed via Vercel with a full CI/CD pipeline, implementing dynamic routing and state management for seamless multi-role user flows in a live production environment.",
+      "End-to-end multi-role flows with real-time mentorship session data synchronization.",
     ],
   },
 ];

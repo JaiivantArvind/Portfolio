@@ -1,8 +1,10 @@
 export const projectLinks: Record<string, { github?: string; demoUrl?: string }> = {
-  "tradegate": { github: "https://github.com/JaiivantArvind/TradeGate" },
-  "supplytrace": { github: "https://github.com/JaiivantArvind/SupplyTrace" },
-  "tamilvision": { github: "https://github.com/JaiivantArvind/TamilVision" },
-  "ai-resume-analyzer": { github: "https://github.com/JaiivantArvind/TalentFit" },
   "mentora": { github: "https://github.com/JaiivantArvind/Mentora" },
-  // Live demo URLs are not yet provided. Add demoUrl here when they are.
+  "supplytrace": { github: "https://github.com/JaiivantArvind/SupplyTrace" },
+  "talentfit": { github: "https://github.com/JaiivantArvind/TalentFit" },
+  "ai-resume-analyzer": { github: "https://github.com/JaiivantArvind/TalentFit" },
+  "tradegate": { github: "https://github.com/JaiivantArvind/TradeGate" },
+  "tamilvision": { github: "https://github.com/JaiivantArvind/TamilVision" },
+  // Live demo URLs can be added here as public deployments are made available.
 };
+

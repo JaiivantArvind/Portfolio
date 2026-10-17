@@ -34,8 +34,9 @@ export function ProjectModal({
   const [activeTab, setActiveTab] = useState<ModalTab>("architecture");
   const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
 
+  const normalizedId = projectId === "ai-resume-analyzer" ? "talentfit" : projectId;
   const currentIndex = detailedProjects.findIndex(
-    (p) => p.id === projectId || p.title.toLowerCase() === projectId?.toLowerCase()
+    (p) => p.id === normalizedId || p.title.toLowerCase() === normalizedId?.toLowerCase()
   );
   const currentProject: DetailedProject | undefined =
     currentIndex !== -1 ? detailedProjects[currentIndex] : detailedProjects[0];

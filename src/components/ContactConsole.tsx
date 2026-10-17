@@ -267,12 +267,15 @@ export function ContactConsole() {
                   )}
                 </div>
 
-                {/* Location Details */}
-                <div className="mt-4 pt-4 border-t border-border/60 flex items-center text-xs text-muted">
+                {/* Location Details & Phone */}
+                <div className="mt-4 pt-4 border-t border-border/60 flex flex-wrap items-center justify-between gap-2 text-xs text-muted">
                   <span className="inline-flex items-center gap-1.5">
                     <MapPin size={13} className="text-accent" />
                     <span>{personalInfo.location}</span>
                   </span>
+                  <a href={`tel:${personalInfo.phone}`} className="inline-flex items-center gap-1.5 text-accent font-mono hover:underline">
+                    <span>{personalInfo.phone}</span>
+                  </a>
                 </div>
               </div>
             )}
