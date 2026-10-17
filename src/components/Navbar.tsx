@@ -112,7 +112,9 @@ export function Navbar({ onOpenCommandPalette, onNavigate, onOpenResume }: Navba
           <button
             onClick={() => setMobileOpen(!mobileOpen)}
             className="p-2 text-muted hover:text-text transition-colors"
-            aria-label="Toggle menu"
+            aria-label={mobileOpen ? "Close menu" : "Open menu"}
+            aria-expanded={mobileOpen}
+            aria-controls="mobile-menu"
           >
             {mobileOpen ? <X size={20} /> : <Menu size={20} />}
           </button>
@@ -123,6 +125,7 @@ export function Navbar({ onOpenCommandPalette, onNavigate, onOpenResume }: Navba
       <AnimatePresence>
         {mobileOpen && (
           <motion.div
+            id="mobile-menu"
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}

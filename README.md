@@ -1,73 +1,55 @@
-# React + TypeScript + Vite
+# Jaiivant Arvind — Portfolio
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A single-page portfolio built with React 19, TypeScript, Vite, Tailwind CSS v4 and Framer Motion.
 
-Currently, two official plugins are available:
+It shows selected projects with architecture breakdowns, a searchable skill matrix, experience and
+education, a résumé preview (print or download), and a contact form.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Run locally
 
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm install
+npm run dev          # http://localhost:5173
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+On Windows, `start.bat` installs dependencies if needed and starts the dev server.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## Scripts
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+| Command           | What it does                                  |
+| ----------------- | --------------------------------------------- |
+| `npm run dev`     | Development server with hot reload            |
+| `npm run build`   | Type-check and produce the production build   |
+| `npm run preview` | Serve the production build locally            |
+| `npm run lint`    | ESLint over the source                        |
+
+## Where the content lives
+
+All visible content is in `src/data/`:
+
+- `resume.ts`: name, role, contact details, project cards, experience, education
+- `projectDetails.ts`: the deep-dive pages (architecture, challenges, metrics)
+- `techMatrixData.ts`: the skill matrix and the project links for each skill
+
+Project links to GitHub repositories and live demos are optional: add `github` or `demoUrl`
+to an entry in `projectDetails.ts` and the buttons appear automatically.
+
+## Accessibility and performance notes
+
+- Keyboard: all project, skill and filter controls are buttons; modals trap focus and return it on close.
+- Motion: respects the operating-system "reduce motion" setting. The cursor text effect is only
+  enabled on fine-pointer devices.
+- Fonts are self-hosted (`@fontsource`); no third-party requests are made on page load.
+- Contrast: secondary text meets WCAG AA.
+
+## Project layout
+
+```
+src/
+  components/   page sections, modals, command palette, Asciify effect
+  data/         all content (see above)
+  lib/          shared logic (skill-to-project matching)
+  utils/        toast helper
+public/         favicon, background image, social-share image, résumé PDF
+docs/plan.md    working notes from development
 ```

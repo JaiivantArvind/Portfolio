@@ -1,5 +1,6 @@
 import { Github, Linkedin, ArrowUp, Terminal, FileText } from "lucide-react";
 import { personalInfo } from "../data/resume";
+import { contactConfig } from "../data/contact";
 
 interface FooterProps {
   onOpenCommandPalette?: () => void;
@@ -27,10 +28,10 @@ export function Footer({ onOpenCommandPalette, onOpenResume, onNavigate }: Foote
               {personalInfo.name}
             </span>
             <span className="text-muted-2 text-xs">•</span>
-            <span className="text-xs font-mono text-accent">Full Stack & Systems</span>
+            <span className="text-xs font-mono text-accent">{personalInfo.role}</span>
           </div>
           <p className="text-muted-2 text-xs font-light tracking-wider">
-            © {new Date().getFullYear()} Jaiivant Arvind · Engineered in Bengaluru, India
+            © {new Date().getFullYear()} Jaiivant Arvind
           </p>
         </div>
 
@@ -62,25 +63,29 @@ export function Footer({ onOpenCommandPalette, onOpenResume, onNavigate }: Foote
             </button>
           )}
 
-          <a
-            href={personalInfo.github}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-1.5 hover:text-accent transition-colors"
-          >
-            <Github size={13} />
-            <span>GitHub</span>
-          </a>
+          {contactConfig.showGithub && (
+            <a
+              href={personalInfo.github}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 hover:text-accent transition-colors"
+            >
+              <Github size={13} />
+              <span>GitHub</span>
+            </a>
+          )}
 
-          <a
-            href={personalInfo.linkedin}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-1.5 hover:text-accent transition-colors"
-          >
-            <Linkedin size={13} />
-            <span>LinkedIn</span>
-          </a>
+          {contactConfig.showLinkedin && (
+            <a
+              href={personalInfo.linkedin}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 hover:text-accent transition-colors"
+            >
+              <Linkedin size={13} />
+              <span>LinkedIn</span>
+            </a>
+          )}
 
           <button
             type="button"

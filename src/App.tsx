@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { MotionConfig } from "framer-motion";
 import { Navbar } from "./components/Navbar";
 import { Hero } from "./components/Hero";
 import { Projects } from "./components/Projects";
@@ -12,14 +13,11 @@ import { CommandPalette } from "./components/CommandPalette";
 import { ProjectModal } from "./components/ProjectModal";
 import { ResumeModal } from "./components/ResumeModal";
 import { ToastContainer } from "./components/Toast";
-import "./index.css";
 
 function App() {
   const [commandPaletteOpen, setCommandPaletteOpen] = useState(false);
   const [resumeModalOpen, setResumeModalOpen] = useState(false);
   const [asciiLensEnabled, setAsciiLensEnabled] = useState(true);
-  const [asciiCharset, setAsciiCharset] = useState<"ascii" | "binary" | "blocks">("ascii");
-  const [asciiRadius, setAsciiRadius] = useState<number>(0.14);
   const [selectedSkill, setSelectedSkill] = useState<string | null>(null);
   const [activeProjectModal, setActiveProjectModal] = useState<string | null>(null);
 
@@ -50,7 +48,14 @@ function App() {
   }, []);
 
   return (
-    <>
+    // reducedMotion="user" makes Framer Motion respect the OS reduce-motion setting
+    <MotionConfig reducedMotion="user">
+      <a
+        href="#main"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[1000] focus:px-4 focus:py-2 focus:bg-accent focus:text-[var(--color-base)] focus:rounded"
+      >
+        Skip to content
+      </a>
       <div className="grain" />
       <ParallaxBackground />
       <div style={{ position: "relative", zIndex: 1 }}>
@@ -59,17 +64,10 @@ function App() {
           onNavigate={handleNavigate}
           onOpenResume={() => setResumeModalOpen(true)}
         />
-        <main>
+        <main id="main" tabIndex={-1}>
           <Hero
             asciiLensEnabled={asciiLensEnabled}
-            asciiCharset={asciiCharset}
-            asciiRadius={asciiRadius}
             onToggleAsciiLens={() => setAsciiLensEnabled((prev) => !prev)}
-            onCycleCharset={() => {
-              setAsciiCharset((prev) =>
-                prev === "ascii" ? "binary" : prev === "binary" ? "blocks" : "ascii"
-              );
-            }}
           />
           <TechMatrix
             selectedSkill={selectedSkill}
@@ -92,17 +90,12 @@ function App() {
         />
       </div>
 
-      {/* Global Interactive Command Palette */}
       <CommandPalette
         isOpen={commandPaletteOpen}
         onClose={() => setCommandPaletteOpen(false)}
         onNavigate={handleNavigate}
         asciiLensEnabled={asciiLensEnabled}
         onToggleAsciiLens={() => setAsciiLensEnabled((prev) => !prev)}
-        asciiCharset={asciiCharset}
-        onSetAsciiCharset={setAsciiCharset}
-        asciiRadius={asciiRadius}
-        onSetAsciiRadius={setAsciiRadius}
         onSelectSkill={(skill) => {
           setSelectedSkill(skill);
           handleNavigate("skills");
@@ -111,24 +104,17 @@ function App() {
         onOpenResume={() => setResumeModalOpen(true)}
       />
 
-      {/* Interactive Project Deep Dive Modal */}
       <ProjectModal
         projectId={activeProjectModal}
         onClose={() => setActiveProjectModal(null)}
         onSelectProject={setActiveProjectModal}
       />
 
-      {/* In-Browser Resume Hub & PDF Modal */}
-      <ResumeModal
-        isOpen={resumeModalOpen}
-        onClose={() => setResumeModalOpen(false)}
-      />
+      <ResumeModal isOpen={resumeModalOpen} onClose={() => setResumeModalOpen(false)} />
 
-      {/* Global Toast Notification System */}
       <ToastContainer />
-    </>
+    </MotionConfig>
   );
 }
 
 export default App;
-

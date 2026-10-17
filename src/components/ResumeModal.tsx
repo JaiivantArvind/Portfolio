@@ -8,7 +8,6 @@ import {
   Printer,
   ExternalLink,
   Mail,
-  Phone,
   MapPin,
   Github,
   Linkedin,
@@ -26,54 +25,51 @@ interface ResumeModalProps {
 }
 
 const markdownResumeText = `# Jaiivant Arvind
-Full Stack & Systems Engineer | Bengaluru, Karnataka, India
-Email: ${personalInfo.email} | Phone: ${personalInfo.phone}
+${personalInfo.role} | ${personalInfo.location}
+Email: ${personalInfo.email}
 GitHub: ${personalInfo.github} | LinkedIn: ${personalInfo.linkedin}
 
 ## PROFESSIONAL SUMMARY
-Systems and Full Stack Engineer specializing in low-level systems (8086 Assembly, C/C++), decentralized Web3 protocols (Solidity, UUPS ERC-1155, The Graph), and computer vision pipelines (PyTorch, OpenCV). Proven track record building high-performance hybrid systems, upgradeable smart contracts, and real-time deep learning classifiers.
+Full-Stack Developer specializing in low-level systems (8086 Assembly, Headless DOSBox), decentralized Web3 protocols (Solidity, UUPS ERC-1155, The Graph), and computer vision pipelines (PyTorch, OpenCV). Experience building high-performance hybrid systems, upgradeable smart contracts, and real-time deep learning classifiers.
 
 ## EDUCATION
 ${education.degree} (${education.period})
 ${education.institution}, ${education.location}
 
 ## CORE TECHNICAL COMPETENCIES
-- Systems & Low-Level: 8086 Assembly (MASM), C, C++, Headless DOSBox, In-Memory Binary Patching, Multi-precision Math
+- Systems & Low-Level: 8086 Assembly (MASM), Headless DOSBox, Byte-Signature Binary Patching, Multi-precision Math
 - Blockchain & Web3: Solidity, UUPS Upgradeable Smart Contracts, ERC-1155, The Graph (Subgraphs), Hardhat, IPFS, Gnosis Safe
-- AI & Computer Vision: PyTorch, MobileNetV3, OpenCV (Otsu & Lanczos), Gemini AI (2.5 Flash), SBERT (all-MiniLM-L6-v2), TF-IDF, NLP
-- Full Stack & Cloud: React 19, Next.js 16, TypeScript, Vite, Tailwind CSS, FastAPI, Flask, Supabase (PostgreSQL & RLS), Docker, Git, Vercel
+- AI & Computer Vision: PyTorch, MobileNetV3, OpenCV (Otsu & Lanczos), Gemini 2.5 Flash and 2.5 Flash Lite, TF-IDF, NLP
+- Full Stack & Cloud: React 19, Next.js, TypeScript, Vite, Tailwind CSS, FastAPI, Flask, Supabase (PostgreSQL & RLS), Git, Vercel
 
 ## SELECTED ENGINEERING PROJECTS
 ### SupplyTrace — Decentralized Supply Chain Provenance (Solidity, React, Hardhat, The Graph, IPFS)
 - Architected a UUPS-upgradeable ERC-1155 smart contract with role-gated state machine (Manufacturer → Distributor → Retailer).
-- Engineered a high-performance indexing layer using The Graph (subgraph), reducing frontend data retrieval latency by 90% vs. direct RPC calls.
+- Engineered a high-performance indexing layer using The Graph (subgraph), reducing frontend data retrieval latency versus direct RPC calls (>4.5 s to sub-200 ms, per the project breakdown).
 - Implemented multi-sig governance via Gnosis Safe, OpenZeppelin AccessControl, and a Circuit Breaker (Pausable) for emergency recalls.
 - Validated logic through 60+ unit tests on Ethereum Sepolia testnet.
 
-### TradeGate — AI-Powered International Tariff Engine (8086 Assembly, Python, Flask, Gemini AI, React, TypeScript)
+### TradeGate — AI-Powered International Tariff Engine (8086 Assembly, Python, Flask, Gemini 2.5 Flash and 2.5 Flash Lite, React, TypeScript)
 - Executes legacy 8086 MASM assembly engine inside headless DOSBox environment for trade duty arithmetic.
-- Engineered an in-memory binary patcher in Python that scans byte signatures in compiled .EXE binaries to dynamically inject rates in <15ms.
+- Engineered a byte-signature binary patcher in Python that scans byte signatures in compiled .EXE binaries to inject rates before execution.
 - Developed custom 32-bit math library in Assembly to bypass 16-bit DIV overflow, handling cargo valuations over $65,535.
-- Integrated Google Gemini AI (2.5 Flash Lite) with graceful fallback to compiled assembly lookup tables.
+- Integrated Google Gemini AI (Gemini 2.5 Flash and 2.5 Flash Lite) with graceful fallback to compiled assembly lookup tables.
 
 ### TamilVision — Real-time 156-Class Unicode Tamil OCR & Vision (PyTorch, FastAPI, OpenCV, Next.js, Three.js)
 - Architected OCR engine using modified MobileNetV3-Small classifying 156 Unicode Tamil characters at sub-50ms latency.
 - Engineered a 12-step OpenCV preprocessing pipeline (Otsu adaptive thresholding, Smart Inversion, Lanczos bicubic resampling).
 - Developed custom Grayscale Input Adapter, collapsing RGB ImageNet weights to reduce convolutional layer VRAM footprint by 66%.
 
-### AI Resume Analyzer — Dual-Scoring Semantic Screening Engine (Python, Flask, SBERT, React 18, Tailwind CSS)
-- Formulated dual-scoring algorithm: 40% TF-IDF keyword extraction + 60% SBERT contextual cosine similarity.
-- Streamlined document extraction across PDF, DOCX, TXT with automated identification of 35+ skill taxonomy clusters in <3s.
+### TalentFit — Dual-Scoring Semantic Screening Engine (Python, Flask, Gemini AI, React, Tailwind CSS)
+- Formulated dual-scoring algorithm: TF-IDF keyword extraction + Gemini dense vector embeddings.
+- Streamlined document extraction across PDF, DOCX, TXT with automated identification of technical skill clusters in <3s.
 
 ### Mentora — Full-Stack Collaborative Mentorship Platform (React, Vite, Tailwind CSS, Supabase, Vercel)
 - Architected SPA with Supabase PostgreSQL and Row-Level Security (RLS) policies for multi-tenant data isolation.
 - Implemented real-time WebSocket messaging and session booking calendar.
 
-## EXPERIENCE & LEADERSHIP
-- Technical Club Member — VIT Vellore Technical Club (2023 – Present)
-  Participated in coding hackathons and system design workshops.
-- Academic Peer Mentor — VIT Vellore (2023 – Present)
-  Tutored peers in data structures, algorithms, and core programming principles in C and Java.
+## EXPERIENCE
+${experience.map((e) => `- ${e.role} — ${e.org} (${e.period})\n${e.bullets.map((b) => `  ${b}`).join("\n")}`).join("\n")}
 `;
 
 export function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
@@ -118,6 +114,9 @@ export function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
 
         {/* Modal Dialog */}
         <motion.div
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="resume-modal-title"
           initial={{ opacity: 0, scale: 0.96, y: 15 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.96, y: 15 }}
@@ -135,11 +134,11 @@ export function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
                 <FileText size={16} />
               </div>
               <div>
-                <h3 className="text-base font-heading font-semibold text-text">
+                <h3 id="resume-modal-title" className="text-base font-heading font-semibold text-text">
                   Curriculum Vitae • Jaiivant Arvind
                 </h3>
                 <p className="text-[11px] font-mono text-muted-2">
-                  1-Page Verified Profile • Multiple Formats Available
+                  One-page résumé • PDF, plain text and print
                 </p>
               </div>
             </div>
@@ -181,7 +180,7 @@ export function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
               <a
                 href="/resume.pdf"
                 download="Jaiivant_Arvind_Resume.pdf"
-                className="inline-flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-mono text-base bg-accent hover:bg-accent-hover font-semibold rounded-lg transition-colors cursor-pointer shadow-sm"
+                className="inline-flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-mono text-[var(--color-base)] bg-accent hover:bg-accent-hover font-semibold rounded-lg transition-colors cursor-pointer shadow-sm"
                 title="Download Official PDF Resume"
               >
                 <Download size={13} />
@@ -223,9 +222,9 @@ export function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
               <div className="border-b border-border/80 pb-6 space-y-3">
                 <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
                   <div>
-                    <h1 className="text-3xl sm:text-4xl font-heading font-bold text-text">
+                    <h2 className="text-3xl sm:text-4xl font-heading font-bold text-text">
                       {personalInfo.name}
-                    </h1>
+                    </h2>
                     <p className="text-sm font-mono text-accent font-medium mt-1">
                       {personalInfo.role} • Systems, Blockchain & Machine Learning
                     </p>
@@ -246,14 +245,6 @@ export function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
                   >
                     <Mail size={12} className="text-accent" />
                     <span>{personalInfo.email}</span>
-                  </a>
-                  <span>•</span>
-                  <a
-                    href={`tel:${personalInfo.phone.replace(/\s+/g, "")}`}
-                    className="hover:text-accent transition-colors flex items-center gap-1"
-                  >
-                    <Phone size={12} className="text-accent" />
-                    <span>{personalInfo.phone}</span>
                   </a>
                   <span>•</span>
                   <a
@@ -285,10 +276,9 @@ export function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
                   Professional Summary
                 </h3>
                 <p className="text-xs sm:text-sm text-text/90 font-light leading-relaxed">
-                  Systems and Full Stack Engineer specializing in low-level systems (8086
-                  Assembly, C/C++), decentralized Web3 protocols (Solidity, UUPS ERC-1155,
-                  The Graph), and computer vision pipelines (PyTorch, OpenCV). Proven track
-                  record building high-performance hybrid systems, upgradeable smart contracts,
+                  Full-Stack Developer specializing in low-level systems (8086
+                  Assembly, Headless DOSBox), decentralized Web3 protocols (Solidity, UUPS ERC-1155,
+                  The Graph), and computer vision pipelines (PyTorch, OpenCV). Experience building high-performance hybrid systems, upgradeable smart contracts,
                   and real-time deep learning classifiers.
                 </p>
               </div>
@@ -326,7 +316,7 @@ export function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
                       Systems & Low-Level:
                     </span>
                     <span className="text-muted leading-relaxed text-[11px]">
-                      8086 Assembly (MASM), C, C++, Headless DOSBox, In-Memory Binary Patching, Multi-precision Math
+                      8086 Assembly (MASM), Headless DOSBox, Byte-Signature Binary Patching, Multi-precision Math
                     </span>
                   </div>
 
@@ -344,7 +334,7 @@ export function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
                       AI & Computer Vision:
                     </span>
                     <span className="text-muted leading-relaxed text-[11px]">
-                      PyTorch, MobileNetV3, OpenCV (Otsu & Lanczos), Gemini AI (2.5 Flash), SBERT, TF-IDF, NLP
+                      PyTorch, MobileNetV3, OpenCV (Otsu & Lanczos), Gemini 2.5 Flash and 2.5 Flash Lite, TF-IDF, NLP
                     </span>
                   </div>
 
@@ -353,7 +343,7 @@ export function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
                       Full Stack & Cloud:
                     </span>
                     <span className="text-muted leading-relaxed text-[11px]">
-                      React 19, Next.js, TypeScript, Vite, Tailwind CSS, FastAPI, Flask, Supabase, Docker, Git
+                      React 19, Next.js, TypeScript, Vite, Tailwind CSS, FastAPI, Flask, Supabase, Git
                     </span>
                   </div>
                 </div>
@@ -382,7 +372,7 @@ export function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
                           {proj.tech.slice(0, 4).map((t) => (
                             <span
                               key={t}
-                              className="text-[9px] font-mono px-1.5 py-0.2 rounded bg-surface border border-border text-muted-2"
+                              className="text-[9px] font-mono px-1.5 py-[2px] rounded bg-surface border border-border text-muted-2"
                             >
                               {t}
                             </span>
@@ -427,9 +417,7 @@ export function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
                       <p className="text-[11px] font-mono text-accent">
                         {exp.org}
                       </p>
-                      <p className="text-xs text-muted leading-relaxed font-light">
-                        {exp.bullets[0]}
-                      </p>
+                      <ul className="space-y-1 text-xs text-muted leading-relaxed font-light">{exp.bullets.map((b) => (<li key={b} className="flex gap-2"><span className="text-accent" aria-hidden="true">•</span><span>{b}</span></li>))}</ul>
                     </div>
                   ))}
                 </div>

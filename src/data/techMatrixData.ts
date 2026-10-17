@@ -1,3 +1,5 @@
+// Every skill must list at least one project in `projects`. Add a skill only when a repo supports it.
+
 export type TechDomain = "all" | "systems" | "web3" | "ai" | "fullstack";
 
 export interface TechSkill {
@@ -32,18 +34,8 @@ export const techSkills: TechSkill[] = [
     featured: true,
   },
   {
-    id: "c-cpp",
-    name: "C / C++",
-    domain: "systems",
-    level: "Core Focus",
-    tag: "Systems & Algorithms",
-    description: "Memory-efficient algorithmic computation, data structures, pointer arithmetic, and low-level system design.",
-    projects: ["TradeGate"],
-    featured: true,
-  },
-  {
     id: "bin-patch",
-    name: "In-Memory Binary Patching",
+    name: "Byte-Signature Binary Patching",
     domain: "systems",
     level: "Specialized",
     tag: "Byte Signature",
@@ -79,7 +71,7 @@ export const techSkills: TechSkill[] = [
     domain: "web3",
     level: "Production",
     tag: "Testing & Deploy",
-    description: "Authored 60+ unit and integration tests with deterministic state validation and gas cost optimization on Sepolia.",
+    description: "Authored 60+ unit tests for deterministic state validation of the contracts.",
     projects: ["SupplyTrace"],
   },
   {
@@ -124,22 +116,12 @@ export const techSkills: TechSkill[] = [
   },
   {
     id: "gemini-ai",
-    name: "Gemini AI (2.5 Flash Lite)",
+    name: "Gemini 2.5 Flash and 2.5 Flash Lite",
     domain: "ai",
     level: "Core Focus",
-    tag: "Live Tariff Fallback",
-    description: "Real-time extraction of WTO MFN tariff schedules with graceful fallback to hardcoded assembly lookup tables.",
-    projects: ["TradeGate"],
-    featured: true,
-  },
-  {
-    id: "sbert",
-    name: "SBERT (Sentence-Transformers)",
-    domain: "ai",
-    level: "Production",
-    tag: "Semantic Embeddings",
-    description: "Vectorized all-MiniLM-L6-v2 embedding model calculating cosine similarity between job descriptions and technical profiles.",
-    projects: ["AI Resume Analyzer"],
+    tag: "Live Tariff & Embeddings",
+    description: "Real-time extraction of WTO MFN tariff schedules with fallback to assembly tables in TradeGate; semantic embeddings in TalentFit.",
+    projects: ["TradeGate", "TalentFit"],
     featured: true,
   },
   {
@@ -148,17 +130,8 @@ export const techSkills: TechSkill[] = [
     domain: "ai",
     level: "Core Focus",
     tag: "Dual-Scoring",
-    description: "Dual-scoring heuristic combining 40% TF-IDF keyword extraction with 60% dense vector contextual alignment.",
-    projects: ["AI Resume Analyzer"],
-  },
-  {
-    id: "pandas",
-    name: "Pandas & Data Pipelines",
-    domain: "ai",
-    level: "Core Focus",
-    tag: "Feature Extraction",
-    description: "Extracted and structured multi-format documents (PDF, DOCX, TXT) across 35+ technical skill taxonomy clusters.",
-    projects: ["AI Resume Analyzer"],
+    description: "Dual-scoring heuristic combining TF-IDF keyword frequency scoring with dense vector contextual alignment.",
+    projects: ["TalentFit"],
   },
 
   // ── Full Stack & Cloud ──
@@ -169,7 +142,7 @@ export const techSkills: TechSkill[] = [
     level: "Production",
     tag: "UI Architecture",
     description: "Engineered luxury editorial interfaces, custom Canvas shaders, Command Palette systems, and resilient reactive SPAs.",
-    projects: ["SupplyTrace", "TradeGate", "Mentora", "AI Resume Analyzer"],
+    projects: ["SupplyTrace", "TradeGate", "Mentora", "TalentFit"],
     featured: true,
   },
   {
@@ -209,7 +182,7 @@ export const techSkills: TechSkill[] = [
     level: "Core Focus",
     tag: "Microservices",
     description: "Lazy-loaded microservice holding ~300MB memory footprint for on-demand document evaluation and DOSBox bridge.",
-    projects: ["TradeGate", "AI Resume Analyzer"],
+    projects: ["TradeGate", "TalentFit"],
   },
   {
     id: "supabase",
@@ -235,17 +208,8 @@ export const techSkills: TechSkill[] = [
     domain: "fullstack",
     level: "Specialized",
     tag: "3D & Shaders",
-    description: "Interactive Fibonacci spheres on 2D Canvas, GLSL Perlin-noise atmospheric shaders, and WebGL ASCII rendering.",
-    projects: ["TamilVision", "TradeGate"],
-  },
-  {
-    id: "docker",
-    name: "Docker",
-    domain: "fullstack",
-    level: "Core Focus",
-    tag: "Containerization",
-    description: "Containerized reproducible execution environments for legacy DOSBox emulators and FastAPI microservices.",
-    projects: ["TradeGate"],
+    description: "Interactive 3D scenes, GLSL Perlin-noise shaders, and WebGL rendering.",
+    projects: ["TamilVision"],
   },
   {
     id: "git",
@@ -270,7 +234,7 @@ export const domainFilters: DomainMeta[] = [
     id: "systems",
     label: "Systems & Low-Level",
     shortLabel: "Systems",
-    description: "8086 MASM Assembly, headless DOSBox execution, in-memory binary patchers, and C/C++ memory models.",
+    description: "8086 MASM Assembly, headless DOSBox execution, and byte-signature binary patchers.",
     count: techSkills.filter((s) => s.domain === "systems").length,
   },
   {
@@ -284,7 +248,7 @@ export const domainFilters: DomainMeta[] = [
     id: "ai",
     label: "AI & Machine Learning",
     shortLabel: "AI & Vision",
-    description: "MobileNetV3 PyTorch adaptation, 12-step OpenCV vision pipelines, SBERT embeddings, and Gemini AI.",
+    description: "MobileNetV3 PyTorch adaptation, 12-step OpenCV vision pipelines, and Gemini 2.5 Flash and 2.5 Flash Lite.",
     count: techSkills.filter((s) => s.domain === "ai").length,
   },
   {

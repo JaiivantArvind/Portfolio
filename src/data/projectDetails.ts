@@ -30,8 +30,6 @@ export interface DetailedProject {
   category: string;
   description: string;
   tech: string[];
-  github?: string;
-  demoUrl?: string;
   metrics: ProjectMetric[];
   architectureNodes: ArchitectureNode[];
   breakthroughs: ProjectBreakthrough[];
@@ -47,13 +45,12 @@ export const detailedProjects: DetailedProject[] = [
     category: "Systems & Low-Level / AI",
     description:
       "A hybrid systems pipeline executing a legacy 8086 MASM assembly engine inside a headless DOSBox environment, dynamically injected with real-time AI tariff data at the binary level.",
-    tech: ["8086 Assembly", "Python", "Flask", "Gemini AI", "React", "TypeScript", "Supabase"],
-    github: "https://github.com/JaiivantArvind",
+    tech: ["8086 Assembly", "Python", "Flask", "Gemini 2.5 Flash and 2.5 Flash Lite", "React", "TypeScript", "Supabase"],
     metrics: [
       { label: "Execution Engine", value: "8086 MASM", detail: "Executed in headless DOSBox sandbox" },
       { label: "Max Calculation", value: ">$65,535", detail: "32-bit math library bypassing 16-bit DIV overflow" },
-      { label: "Rate Injection", value: "<15ms", detail: "Direct in-memory binary signature patcher" },
-      { label: "AI Integration", value: "Gemini 2.5", detail: "WTO MFN dynamic rate extraction with fallback" },
+      { label: "Rate Injection", value: "Per run", detail: "Byte-signature patch written before headless DOSBox executes" },
+      { label: "AI Integration", value: "Gemini 2.5 Flash and 2.5 Flash Lite", detail: "WTO MFN dynamic rate extraction with fallback" },
     ],
     architectureNodes: [
       {
@@ -69,35 +66,39 @@ export const detailedProjects: DetailedProject[] = [
         id: "tg-ai",
         step: 2,
         title: "Tariff Resolver",
-        tech: "Google Gemini 2.5 Flash",
+        tech: "Gemini 2.5 Flash and 2.5 Flash Lite",
         role: "Real-time MFN tariff schedule lookup with deterministic fallback",
         type: "ai",
-        details: "Queries live trade schedules. If rate fetch exceeds 500ms or fails, falls back instantly to compiled in-binary trade duty lookup tables.",
-        codeSnippet: `async function resolveTariffRate(hsCode: string): Promise<number> {
-  try {
-    const rate = await gemini.extractMFNRate({ code: hsCode, timeoutMs: 500 });
-    return rate ?? FALLBACK_TABLE[hsCode.slice(0, 4)];
-  } catch {
-    return FALLBACK_TABLE[hsCode.slice(0, 4)] ?? 0.075;
-  }
-}`,
+        details: "Queries live trade schedules. If rate fetch exceeds timeout or fails, falls back instantly to compiled in-binary trade duty lookup tables.",
+        codeSnippet: `def get_live_tariff(exporter, importer, category):
+    try:
+        client = genai.Client(api_key=os.environ["GEMINI_API_KEY"])
+        response = client.models.generate_content(
+            model="gemini-2.5-flash-lite",
+            contents=f"MFN rate for {category} from {exporter} to {importer}",
+        )
+        return float(response.text.strip())
+    except Exception:
+        return None  # Fall back to hardcoded binary table`,
       },
       {
         id: "tg-patcher",
         step: 3,
         title: "Binary Patcher",
         tech: "Python Patcher Engine",
-        role: "In-memory byte-signature injection into compiled DOSBox .EXE",
+        role: "Byte-signature injection into compiled DOSBox .EXE",
         type: "compute",
-        details: "Scans the compiled 16-bit executable image for unique byte markers ($T_RATE_ADDR) and patches in the resolved rate prior to execution.",
-        codeSnippet: `def patch_executable_binary(exe_path, resolved_rate_bp):
-    SIGNATURE = b"\\xAA\\x55\\xDE\\xAD\\xBE\\xEF"
-    with open(exe_path, "r+b") as f:
-        data = f.read()
-        offset = data.find(SIGNATURE)
-        if offset != -1:
-            f.seek(offset + len(SIGNATURE))
-            f.write(struct.pack("<H", resolved_rate_bp))`,
+        details: "Scans the compiled 16-bit executable image for unique byte markers and patches in the resolved rate prior to execution.",
+        codeSnippet: `def patch_tariff_exe(src_exe, dest_exe, offset_index, tariff_value):
+    signature = bytes([0xC4, 0x09, 0x60, 0x09, 0xFC, 0x08])
+    data = src_exe.read_bytes()
+    idx = data.find(signature)
+    if idx == -1:
+        return False
+    byte_offset = idx + offset_index * 2
+    patched = data[:byte_offset] + struct.pack("<H", tariff_value) + data[byte_offset + 2:]
+    dest_exe.write_bytes(patched)
+    return True`,
       },
       {
         id: "tg-asm",
@@ -115,38 +116,31 @@ export const detailedProjects: DetailedProject[] = [
         problem:
           "The native 8086 DIV instruction causes a Divide Error (INT 0) when dividing a 32-bit numerator by a 16-bit denominator if the resulting quotient exceeds 16 bits (65,535). Real-world cargo values routinely exceed $65,535.",
         solution:
-          "Authored a custom multi-precision 32-bit division routine in MASM. Decomposed the 32-bit dividend (DX:AX) into high and low word operations, performing partial division on DX first, shifting remainders into AX, and recombining quotients in CX:BX.",
+          "Authored a custom multi-precision division routine in MASM. Decomposed the dividend into high and low word operations, performing partial division on the high word first and chaining remainders into the low word.",
         language: "x86asm",
-        codeSnippet: `; 32-bit by 16-bit Division Routine: DX:AX / BX -> DX:AX (Quotient), CX (Remainder)
-DIV32 PROC
-    PUSH SI
-    MOV  SI, AX        ; Save low word
-    MOV  AX, DX        ; Load high word
-    XOR  DX, DX        ; Clear DX for upper div
-    DIV  BX            ; AX = High Quotient, DX = Remainder
-    MOV  CX, AX        ; Store High Quotient in CX
-    MOV  AX, SI        ; Restore Low Word
-    DIV  BX            ; Divide (DX:AX) by BX -> AX = Low Quotient, DX = Remainder
-    MOV  SI, DX        ; SI = Final Remainder
-    MOV  DX, CX        ; DX = High Quotient
-    MOV  CX, SI        ; CX = Remainder
-    POP  SI
-    RET
-DIV32 ENDP`,
+        codeSnippet: `; Divide SI:CX by 10000 (two-step chained division avoiding overflow)
+mov bx, 10000
+mov ax, si          ; step 1: high word / 10000
+xor dx, dx
+div bx              ; AX = duty_hi quotient, DX = remainder
+mov di, ax          ; save duty_hi in DI
+mov ax, cx          ; step 2: remainder:CX / 10000
+div bx              ; DX fed automatically from step 1; AX = duty_lo
+mov dx, di          ; DX:AX contains 32-bit quotient`,
       },
       {
-        title: "In-Memory Byte-Signature Binary Patcher",
+        title: "Byte-Signature Binary Patcher",
         problem:
           "Modifying tariff tables in legacy MASM code traditionally required full recompilation, which introduces ~2-second latency and requires a 16-bit assembler toolchain in production.",
         solution:
-          "Engineered a runtime Python binary patcher that locates a fixed 6-byte sentinel pattern in the precompiled DOS executable and overwrites the exact memory buffer in <15ms before headless DOSBox invocation.",
+          "Engineered a Python binary patcher that locates a fixed 6-byte sentinel pattern in the precompiled DOS executable and overwrites the matching bytes before headless DOSBox runs it.",
         language: "python",
       },
     ],
     keyOutcomes: [
-      "Sub-second end-to-end execution combining modern cloud web frontend with 40-year-old assembly arithmetic.",
-      "Eliminated 16-bit integer overflows, safely computing shipments up to $4,294,967,295.",
-      "Dual-layer reliability: dynamic Gemini AI rates with guaranteed zero-failure fallback to assembly binary data.",
+      "End-to-end pipeline combining a modern web frontend with 8086 assembly arithmetic.",
+      "Removes the 16-bit quotient limit: the 32-bit dividend supports values up to 4,294,967,295 base units.",
+      "Dual-layer rates: live Gemini lookup (Gemini 2.5 Flash and 2.5 Flash Lite) with fallback to compiled tables when it fails or times out.",
     ],
   },
 
@@ -157,14 +151,13 @@ DIV32 ENDP`,
     subtitle: "Decentralized Supply Chain Provenance on Ethereum Sepolia",
     category: "Blockchain & Web3",
     description:
-      "A production-grade decentralized product provenance protocol featuring UUPS-upgradeable ERC-1155 smart contracts, The Graph subgraph indexing, and multi-sig threshold governance.",
+      "A decentralized product provenance protocol featuring UUPS-upgradeable ERC-1155 smart contracts, The Graph subgraph indexing, and multi-sig threshold governance.",
     tech: ["Solidity", "React", "Hardhat", "The Graph", "IPFS", "Tailwind CSS"],
-    github: "https://github.com/JaiivantArvind",
     metrics: [
       { label: "Token Standard", value: "ERC-1155", detail: "Semi-fungible batch tracking (Items & Batches)" },
       { label: "Upgradeability", value: "UUPS Proxy", detail: "ERC1967 storage slots with authorization guards" },
-      { label: "Event Indexing", value: "The Graph", detail: "GraphQL subgraph reducing query latency by 90%" },
-      { label: "Safety Controls", value: "60+ Tests", detail: "100% state machine coverage with Circuit Breaker" },
+      { label: "Event Indexing", value: "The Graph", detail: "GraphQL subgraph; in the project breakdown, >4.5 s RPC queries became sub-200 ms" },
+      { label: "Safety Controls", value: "60+ Tests", detail: "Hardhat tests covering state transitions and the Circuit Breaker" },
     ],
     architectureNodes: [
       {
@@ -183,14 +176,15 @@ DIV32 ENDP`,
         tech: "GraphQL Indexer",
         role: "Event-driven real-time indexing layer",
         type: "pipeline",
-        details: "Listens to contract event logs (BatchCreated, CustodyTransferred, ProductRecalled), indexing relationships in an optimized GraphQL database.",
-        codeSnippet: `export function handleCustodyTransferred(event: CustodyTransferredEvent): void {
-  let batch = Batch.load(event.params.batchId.toString());
-  if (batch) {
-    batch.currentCustodian = event.params.to;
-    batch.updatedAt = event.block.timestamp;
-    batch.save();
-  }
+        details: "Listens to contract event logs (BatchCreated, BatchTransferred, ProductRecalled), indexing relationships in an optimized GraphQL database.",
+        codeSnippet: `export function handleBatchTransferred(event: BatchTransferredEvent): void {
+  let transferId = event.transaction.hash.toHex() + "-" + event.logIndex.toString();
+  let transfer = new CustodyTransfer(transferId);
+  transfer.tokenId = event.params.tokenId;
+  transfer.from = event.params.from;
+  transfer.to = event.params.to;
+  transfer.timestamp = event.block.timestamp;
+  transfer.save();
 }`,
       },
       {
@@ -218,21 +212,14 @@ DIV32 ENDP`,
         problem:
           "Traditional ERC-721/1155 contracts cannot fix logic vulnerabilities or update compliance rules without deploying new addresses and breaking physical product QR codes.",
         solution:
-          "Adopted the Universal Upgradeable Proxy Standard (UUPS / ERC1967). Enforced strict AccessControl requiring DEFAULT_ADMIN_ROLE (Gnosis Safe) for upgrades, preventing unauthorized logic mutation while preserving token storage state.",
+          "Adopted the Universal Upgradeable Proxy Standard (UUPS / ERC1967). Enforced strict AccessControl requiring ADMIN_ROLE for upgrades, preventing unauthorized logic mutation while preserving token storage state.",
         language: "solidity",
-        codeSnippet: `contract SupplyTraceV1 is Initializable, ERC1155Upgradeable, AccessControlUpgradeable, PausableUpgradeable, UUPSUpgradeable {
-    bytes32 public constant DISTRIBUTOR_ROLE = keccak256("DISTRIBUTOR_ROLE");
-    bytes32 public constant RETAILER_ROLE = keccak256("RETAILER_ROLE");
+        codeSnippet: `function _authorizeUpgrade(address newImplementation) internal override onlyRole(ADMIN_ROLE) {}
 
-    function _authorizeUpgrade(address newImplementation) internal override onlyRole(DEFAULT_ADMIN_ROLE) {}
-
-    function transferCustody(uint256 batchId, address to, Stage nextStage) external whenNotPaused {
-        require(batches[batchId].currentCustodian == msg.sender, "Unauthorized");
-        require(isValidTransition(batches[batchId].stage, nextStage), "Invalid Stage");
-        batches[batchId].currentCustodian = to;
-        batches[batchId].stage = nextStage;
-        emit CustodyTransferred(batchId, msg.sender, to, nextStage);
-    }
+function transferBatch(uint256 tokenId, address to, uint256 quantity) external whenNotPaused {
+    require(to != address(0), "Zero address");
+    safeTransferFrom(msg.sender, to, tokenId, quantity, "");
+    emit BatchTransferred(tokenId, msg.sender, to, quantity, block.timestamp);
 }`,
       },
       {
@@ -240,7 +227,7 @@ DIV32 ENDP`,
         problem:
           "Querying batch history, custody chains, and recall statuses across hundreds of batches via raw ethers.js RPC calls took >4.5 seconds and triggered RPC rate-limits.",
         solution:
-          "Engineered a dedicated subgraph deployed on The Graph Studio that listens to CustodyTransferred and BatchCreated logs, providing sub-200ms GraphQL queries.",
+          "Engineered a dedicated subgraph deployed on The Graph Studio that listens to BatchTransferred and BatchCreated logs, providing sub-200ms GraphQL queries.",
       },
     ],
     keyOutcomes: [
@@ -259,7 +246,6 @@ DIV32 ENDP`,
     description:
       "High-performance deep learning OCR engine classifying 156 complex Unicode Tamil characters at sub-50ms latency using a modified MobileNetV3 and a 12-step OpenCV pipeline.",
     tech: ["PyTorch", "FastAPI", "OpenCV", "Next.js", "Three.js", "Tailwind CSS"],
-    github: "https://github.com/JaiivantArvind",
     metrics: [
       { label: "Inference Latency", value: "<50ms", detail: "Optimized MobileNetV3-Small architecture" },
       { label: "Character Space", value: "156 Classes", detail: "Comprehensive Unicode Tamil vowel/consonant pairs" },
@@ -271,7 +257,7 @@ DIV32 ENDP`,
         id: "tv-ui",
         step: 1,
         title: "Web Client",
-        tech: "Next.js 16 + Three.js",
+        tech: "Next.js + Three.js",
         role: "Canvas drawing pad, document upload, and GLSL Perlin-noise visualization",
         type: "client",
         details: "High-DPR drawing interface with bounding box segmentation overlays and live confidence scoring.",
@@ -317,21 +303,13 @@ DIV32 ENDP`,
         problem:
           "Pretrained ImageNet backbones expect 3-channel RGB inputs. Feeding duplicate 3-channel grayscale tensors wastes memory bandwidth and slows convolutional forward passes.",
         solution:
-          "Engineered a Grayscale Weight Adapter that computes the luminance-weighted sum (0.299R + 0.587G + 0.114B) of the first Conv2d layer's weights, collapsing 3 channels into 1 while preserving pretrained low-level edge detection filters.",
+          "Engineered a Grayscale Weight Adapter that computes the sum across RGB channels for the first Conv2d layer's weights, collapsing 3 channels into 1 while preserving pretrained low-level edge detection filters.",
         language: "python",
-        codeSnippet: `def adapt_mobilenet_for_grayscale(model):
-    orig_conv = model.features[0][0]
-    gray_conv = nn.Conv2d(1, orig_conv.out_channels, kernel_size=3, stride=2, padding=1, bias=False)
+        codeSnippet: `def adapt_first_conv_to_grayscale(orig_conv):
+    new_conv = nn.Conv2d(1, orig_conv.out_channels, kernel_size=orig_conv.kernel_size, stride=orig_conv.stride, padding=orig_conv.padding, bias=False)
     with torch.no_grad():
-        # Luminance-weighted collapse of RGB pretrained weights
-        weights = orig_conv.weight.data
-        gray_conv.weight.data = (
-            0.299 * weights[:, 0:1, :, :] +
-            0.587 * weights[:, 1:2, :, :] +
-            0.114 * weights[:, 2:3, :, :]
-        )
-    model.features[0][0] = gray_conv
-    return model`,
+        new_conv.weight.copy_(orig_conv.weight.sum(dim=1, keepdim=True))
+    return new_conv`,
       },
       {
         title: "12-Step OpenCV Preprocessing for Irregular Handwriting",
@@ -342,25 +320,24 @@ DIV32 ENDP`,
       },
     ],
     keyOutcomes: [
-      "Sub-50ms inference latency on standard serverless GPU/CPU endpoints.",
+      "Designed for sub-50 ms inference with a MobileNetV3-Small backbone.",
       "High accuracy across 156 Unicode Tamil characters including compound vowels and consonants.",
       "Minimal memory footprint through 1-channel weight adaptation.",
     ],
   },
 
-  // ── 4. AI Resume Analyzer ──
+  // ── 4. TalentFit ──
   {
     id: "ai-resume-analyzer",
-    title: "AI Resume Analyzer",
+    title: "TalentFit",
     subtitle: "Dual-Scoring Semantic Screening Engine",
     category: "Machine Learning & NLP",
     description:
-      "An intelligent resume-to-job-description evaluation engine pairing TF-IDF keyword extraction with SBERT semantic embeddings for nuanced contextual alignment.",
-    tech: ["Python", "Flask", "SBERT", "React 18", "Tailwind CSS", "NLP"],
-    github: "https://github.com/JaiivantArvind",
+      "An intelligent resume-to-job-description evaluation engine pairing TF-IDF keyword extraction with Gemini semantic embeddings for nuanced contextual alignment.",
+    tech: ["Python", "Flask", "Gemini AI", "React", "Tailwind CSS", "NLP"],
     metrics: [
-      { label: "Scoring Weight", value: "40% / 60%", detail: "40% TF-IDF Keyword Match + 60% SBERT Semantic Embedding" },
-      { label: "Memory Footprint", value: "~300MB", detail: "Lazy-loaded Sentence-Transformers model on Flask" },
+      { label: "Scoring Weight", value: "Keyword + Semantic", detail: "TF-IDF keyword matching + Gemini dense vector embeddings" },
+      { label: "Memory Footprint", value: "~300MB", detail: "On-demand Gemini API embeddings and lightweight Flask microservice" },
       { label: "Inference Speed", value: "<3.0s", detail: "Multi-page document parsing and vector scoring" },
       { label: "Taxonomy Size", value: "35+ Clusters", detail: "Identifies core engineering competencies" },
     ],
@@ -378,7 +355,7 @@ DIV32 ENDP`,
         id: "ra-parser",
         step: 2,
         title: "Document Ingestion",
-        tech: "PyPDF2 / python-docx",
+        tech: "pypdf / python-docx",
         role: "Multi-format document parsing and text normalization",
         type: "pipeline",
         details: "Extracts raw text streams across PDF, DOCX, and TXT files, stripping formatting noise and tokenizing sections.",
@@ -388,44 +365,42 @@ DIV32 ENDP`,
         step: 3,
         title: "TF-IDF Engine",
         tech: "Scikit-Learn NLP",
-        role: "Exact and n-gram keyword frequency scoring (40% weight)",
+        role: "Exact and n-gram keyword frequency scoring",
         type: "compute",
         details: "Measures domain terminology density and presence of must-have toolchains against the job requirement.",
       },
       {
-        id: "ra-sbert",
+        id: "ra-gemini",
         step: 4,
-        title: "SBERT Embeddings",
-        tech: "all-MiniLM-L6-v2",
-        role: "Contextual semantic embedding alignment (60% weight)",
+        title: "Gemini Semantic Embeddings",
+        tech: "Google Gemini",
+        role: "Contextual semantic embedding alignment",
         type: "ai",
-        details: "Projects resume and JD text into a 384-dimensional dense vector space, computing cosine similarity to catch conceptual equivalence (e.g. 'Kubernetes' vs 'K8s cluster orchestration').",
+        details: "Projects resume and job description text into dense vector space using Gemini text-embedding-004, computing cosine similarity for conceptual match.",
+        codeSnippet: `def calculate_semantic_score(resume_text, job_desc):
+    res_embed = genai.embed_content(
+        model="models/text-embedding-004", content=resume_text[:3000], task_type="clustering"
+    )["embedding"]
+    jd_embed = genai.embed_content(
+        model="models/text-embedding-004", content=job_desc[:3000], task_type="clustering"
+    )["embedding"]
+    similarity = cosine_similarity([res_embed], [jd_embed])[0][0]
+    return round(float(similarity) * 100, 1)`,
       },
     ],
     breakthroughs: [
       {
-        title: "Dual-Scoring Heuristic: TF-IDF + SBERT Vector Fusion",
+        title: "Dual-Scoring Heuristic: TF-IDF + Gemini Vector Embeddings",
         problem:
           "Keyword-only screening misses strong candidates who describe equivalent skills in different terms. Semantic-only screening can be fooled by buzzwords that lack specific hard skill mentions.",
         solution:
-          "Formulated a balanced dual-scoring algorithm: 40% TF-IDF keyword match + 60% SBERT contextual cosine similarity.",
+          "Formulated a balanced dual-scoring algorithm combining keyword frequency matching with Google Gemini dense vector embeddings (text-embedding-004).",
         language: "python",
-        codeSnippet: `def evaluate_candidate_alignment(resume_text, jd_text):
-    # 1. TF-IDF Keyword Overlap (40%)
-    tfidf_matrix = vectorizer.fit_transform([resume_text, jd_text])
-    keyword_score = cosine_similarity(tfidf_matrix[0:1], tfidf_matrix[1:2])[0][0]
-
-    # 2. SBERT Contextual Semantic Similarity (60%)
-    embeddings = sbert_model.encode([resume_text, jd_text], convert_to_tensor=True)
-    semantic_score = util.cos_sim(embeddings[0], embeddings[1]).item()
-
-    final_score = (0.40 * keyword_score) + (0.60 * semantic_score)
-    return round(final_score * 100, 2)`,
       },
     ],
     keyOutcomes: [
-      "Sub-3-second end-to-end document evaluation.",
-      "Compact memory footprint (~300MB) via lazy model loading on serverless containers.",
+      "Designed for sub-3-second document evaluation.",
+      "Compact memory footprint via cloud-based Gemini embedding inference.",
       "Clear, actionable feedback highlighting candidate skill gaps.",
     ],
   },
@@ -437,14 +412,13 @@ DIV32 ENDP`,
     subtitle: "Full-Stack Collaborative Mentorship Platform",
     category: "Full Stack & Cloud",
     description:
-      "A responsive, full-stack mentorship platform connecting students with alumni and industry mentors, featuring real-time chat and Supabase Row-Level Security.",
+      "A responsive, full-stack mentorship platform connecting students with mentors, featuring real-time chat and Supabase Row-Level Security.",
     tech: ["React", "Vite", "Tailwind CSS", "Supabase", "Vercel"],
-    github: "https://github.com/JaiivantArvind",
     metrics: [
-      { label: "Frontend Speed", value: "Vite SPA", detail: "Sub-100ms client-side route transitions" },
+      { label: "Frontend Speed", value: "Vite SPA", detail: "Client-side routing with no full page reloads" },
       { label: "Data Layer", value: "Supabase BaaS", detail: "PostgreSQL with strict Row-Level Security policies" },
       { label: "Communication", value: "Real-time", detail: "WebSocket event listeners for instant mentorship messaging" },
-      { label: "Deployment", value: "Vercel CI/CD", detail: "Continuous delivery with preview environments" },
+      { label: "Deployment", value: "Vercel", detail: "Continuous deployment from Git to Vercel" },
     ],
     architectureNodes: [
       {
@@ -485,23 +459,21 @@ DIV32 ENDP`,
         language: "sql",
         codeSnippet: `ALTER TABLE messages ENABLE ROW LEVEL SECURITY;
 
-CREATE POLICY "Users can only read messages from their own sessions"
+CREATE POLICY "Users can read own session messages"
 ON messages FOR SELECT
 USING (
-    auth.uid() = sender_id OR 
-    auth.uid() = receiver_id OR 
+    auth.uid() = sender_id OR auth.uid() = receiver_id OR
     EXISTS (
-        SELECT 1 FROM sessions 
-        WHERE sessions.id = messages.session_id 
+        SELECT 1 FROM sessions WHERE sessions.id = messages.session_id
         AND (sessions.mentor_id = auth.uid() OR sessions.student_id = auth.uid())
     )
 );`,
       },
     ],
     keyOutcomes: [
-      "Zero-latency real-time chat with optimistic client updates.",
-      "Bulletproof data isolation using database-level security policies.",
-      "Seamless SPA navigation with zero page reloads.",
+      "Real-time chat with optimistic client updates.",
+      "Data isolation enforced by database-level Row-Level Security policies.",
+      "Single-page navigation without full page reloads.",
     ],
   },
 ];

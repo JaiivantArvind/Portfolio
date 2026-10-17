@@ -7,7 +7,7 @@ export function Education() {
       <div className="max-w-5xl mx-auto">
         <div className="mb-20 max-w-2xl">
           <p className="text-accent text-xs tracking-[0.3em] uppercase font-medium mb-4">
-            Academic Pedigree
+            Education
           </p>
           <h2 className="text-4xl md:text-6xl mb-6">
             The <br />

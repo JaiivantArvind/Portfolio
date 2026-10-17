@@ -159,7 +159,7 @@ export function ArchitectureVisualizer({ nodes }: ArchitectureVisualizerProps) {
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-[10px] font-mono uppercase tracking-wider text-muted-2 flex items-center gap-1.5">
                     <Code2 size={12} className="text-accent" />
-                    Implementation Logic / Contract Interface
+                    Simplified excerpt
                   </span>
                   <button
                     type="button"

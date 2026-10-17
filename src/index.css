@@ -1,4 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&display=swap');
 @import "tailwindcss";
 
 :root {
@@ -7,14 +6,14 @@
 
   /* Luxury Editorial Palette */
   --color-base: #0f0f0f;         /* Deep Charcoal */
-  --color-surface: #161616;     /* Soft Black */
-  --color-surface-2: #1c1c1c;   /* Elevated Surface */
+  --color-surface: #161616;      /* Soft Black */
+  --color-surface-2: #1c1c1c;    /* Elevated Surface */
   --color-border: #262626;       /* Subtle Architectural Line */
   --color-accent: #c5a35d;       /* Muted Champagne Gold */
   --color-accent-hover: #d4b773;
   --color-text: #e5e5e5;         /* Off-white / Silver */
-  --color-muted: #a3a3a3;        /* Soft Grey */
-  --color-muted-2: #737373;
+  --color-muted: #a3a3a3;        /* Soft Grey (7.6:1 on base) */
+  --color-muted-2: #9a9a9a;      /* Secondary text (6.8:1 on base; WCAG AA) */
 }
 
 @theme {
@@ -30,7 +29,7 @@
   --color-accent-hover: #d4b773;
   --color-text: #e5e5e5;
   --color-muted: #a3a3a3;
-  --color-muted-2: #737373;
+  --color-muted-2: #9a9a9a;
 }
 
 * {
@@ -76,10 +75,30 @@ h3 {
   font-weight: 600;
 }
 
-a {
-  text-decoration: none;
-  color: inherit;
-  transition: color 0.3s ease;
+/* In a base layer so colour utilities on links (text-muted, hover:text-accent, ...) take effect */
+@layer base {
+  a {
+    text-decoration: none;
+    color: inherit;
+    transition: color 0.3s ease;
+  }
+}
+
+/* Keyboard focus: visible for every interactive element, mouse clicks unaffected */
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 3px;
+}
+
+/* Thin scrollbars used by panels (these utilities were referenced but never defined) */
+.scrollbar-thin {
+  scrollbar-width: thin;
+}
+.scrollbar-none {
+  scrollbar-width: none;
+}
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
 }
 
 ::-webkit-scrollbar {
@@ -99,7 +118,7 @@ a {
   background: var(--color-muted-2);
 }
 
-/* Grain Overlay */
+/* Film-grain overlay: generated inline (no third-party request) */
 .grain {
   position: fixed;
   top: 0;
@@ -109,26 +128,82 @@ a {
   pointer-events: none;
   z-index: 9999;
   opacity: 0.04;
-  background-image: url("https://grainy-gradients.vercel.app/noise.svg");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
-/* Luxury Animations */
-@keyframes reveal-up {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
+/* Respect the OS "reduce motion" setting for CSS animations and smooth scrolling */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
   }
-  to {
-    opacity: 1;
-    transform: translateY(0);
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
-}
-
-.animate-reveal {
-  animation: reveal-up 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
 @keyframes cursor-blink {
   0%, 100% { opacity: 1; }
   50% { opacity: 0; }
+}
+
+/* Print: show only the résumé sheet, on white, with black text.
+   Everything at the top level of the app is removed from print flow, then the résumé
+   modal is un-clipped so the full sheet paginates. */
+@media print {
+  #root > * {
+    display: none !important;
+  }
+  #root > div.fixed:has(#printable-resume) {
+    display: block !important;
+    position: static !important;
+    inset: auto !important;
+    width: auto !important;
+    height: auto !important;
+    padding: 0 !important;
+    overflow: visible !important;
+    background: #fff !important;
+    z-index: auto !important;
+  }
+  #root > div.fixed:has(#printable-resume) > div.fixed {
+    display: none !important;
+  }
+  #root > div.fixed:has(#printable-resume) > div.relative {
+    display: block !important;
+    position: static !important;
+    max-height: none !important;
+    overflow: visible !important;
+    border: none !important;
+    box-shadow: none !important;
+    background: #fff !important;
+    transform: none !important;
+    opacity: 1 !important;
+  }
+  #root > div.fixed:has(#printable-resume) > div.relative > :first-child {
+    display: none !important;
+  }
+  #root > div.fixed:has(#printable-resume) > div.relative > div {
+    overflow: visible !important;
+    max-height: none !important;
+    padding: 0 !important;
+  }
+  #printable-resume {
+    background: #fff !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    color: #000 !important;
+  }
+  #printable-resume * {
+    color: #000 !important;
+    background: transparent !important;
+    border-color: #bbb !important;
+    box-shadow: none !important;
+  }
+  html, body {
+    background: #fff !important;
+  }
 }

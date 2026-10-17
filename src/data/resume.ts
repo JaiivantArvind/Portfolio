@@ -1,10 +1,9 @@
 export const personalInfo = {
   name: "Jaiivant Arvind",
-  role: "Full Stack Engineer",
-  tagline: "Building scalable web apps, blockchain systems & AI-powered tools.",
-  location: "Bengaluru, Karnataka, India",
+  role: "Full-Stack Developer",
+  tagline: "Building web apps, blockchain systems and AI-powered tools.",
+  location: "Bangalore",
   email: "jaiivant@gmail.com",
-  phone: "+91 9611717229",
   github: "https://github.com/JaiivantArvind",
   linkedin: "https://linkedin.com/in/jaiivant-arvind-570bab3a5",
   status: "Open to Opportunities",
@@ -43,12 +42,12 @@ export const projects: Project[] = [
       "Hybrid pipeline executing a legacy 8086 MASM assembly engine inside DOSBox with AI-sourced live tariff rates injected at the binary level.",
     bullets: [
       "Executes a legacy 8086 MASM assembly engine inside a headless DOSBox environment for real-time trade duty arithmetic.",
-      'Engineered an "In-Memory Binary Patcher" in Python — identifies data structures in compiled .EXE via byte-signature matching.',
-      "Integrated Google Gemini AI (2.5 Flash Lite) to dynamically fetch MFN rates with graceful fallback to hardcoded assembly tables.",
+      'Engineered a "Byte-Signature Binary Patcher" in Python — identifies data structures in compiled .EXE via byte-signature matching.',
+      "Integrated Google Gemini AI (Gemini 2.5 Flash and 2.5 Flash Lite) to dynamically fetch MFN rates with graceful fallback to hardcoded assembly tables.",
       "Developed a 32-bit math library in Assembly to bypass 16-bit DIV overflow, handling shipment values exceeding 65,535 USD.",
       "Built a React + TypeScript frontend with a custom Fibonacci sphere (Canvas 2D) and Supabase Google OAuth.",
     ],
-    tech: ["8086 Assembly", "Python", "Flask", "Gemini AI", "React", "TypeScript", "Supabase"],
+    tech: ["8086 Assembly", "Python", "Flask", "Gemini 2.5 Flash and 2.5 Flash Lite", "React", "TypeScript", "Supabase"],
     featured: true,
   },
   {
@@ -60,25 +59,25 @@ export const projects: Project[] = [
       "Architected OCR engine using modified MobileNetV3-Small to classify 156 Unicode Tamil characters at sub-50ms latency.",
       "Engineered a 12-step OpenCV preprocessing pipeline using Otsu's Thresholding, Smart Inversion, and Lanczos Resampling.",
       "Developed a custom Grayscale Input Adapter, summing pretrained ImageNet RGB weights to reduce model VRAM footprint.",
-      "Implemented Glassmorphism UI with Next.js 16 and Tailwind v4, featuring a GPU-accelerated Three.js / GLSL Perlin-noise background.",
+      "Implemented Glassmorphism UI with Next.js and Tailwind v4, featuring a GPU-accelerated Three.js / GLSL Perlin-noise background.",
       "Optimized with Mixed-Precision (AMP) and AdamW + Cosine Annealing scheduler, with heavy data augmentation.",
     ],
     tech: ["PyTorch", "FastAPI", "OpenCV", "Next.js", "Three.js", "Tailwind CSS"],
     featured: true,
   },
   {
-    title: "AI Resume Analyzer",
-    subtitle: "Intelligent Screening Engine",
+    title: "TalentFit",
+    subtitle: "Dual-Scoring Semantic Screening Engine",
     description:
-      "Dual-scoring heuristic (TF-IDF + SBERT semantic embeddings) to evaluate resume-to-JD alignment with contextual nuance.",
+      "Dual-scoring screening engine pairing keyword matching with Gemini semantic embeddings for nuanced contextual candidate evaluation.",
     bullets: [
-      "Architected a dual-scoring engine: 40% TF-IDF Keyword Match + 60% SBERT Semantic Embedding for contextual JD alignment.",
-      "Engineered a Flask backend with Sentence-Transformers (all-MiniLM-L6-v2) and lazy model loading for ~300MB memory footprint.",
-      "Built a robust data extraction pipeline supporting PDF, DOCX, TXT with automated identification of 35+ technical skill clusters.",
-      "Developed a React 18 analytics dashboard with color-coded skill gap visualizations.",
-      "Optimized inference to sub-3-second processing per document via streamlined vectorization and Axios HTTP communication.",
+      "Architected a dual-scoring engine combining keyword frequency matching with Google Gemini semantic embeddings for contextual JD alignment.",
+      "Engineered a Flask backend with Google Gemini embeddings (text-embedding-004) and generative summary extraction.",
+      "Built a robust data extraction pipeline supporting PDF, DOCX, TXT with automated identification of technical skill clusters.",
+      "Developed a React analytics dashboard with color-coded skill gap visualizations.",
+      "Optimized inference to sub-3-second processing per document via streamlined vectorization.",
     ],
-    tech: ["Python", "Flask", "SBERT", "React 18", "Tailwind CSS", "NLP"],
+    tech: ["Python", "Flask", "Gemini AI", "React", "Tailwind CSS", "NLP"],
   },
   {
     title: "Mentora",
@@ -89,7 +88,7 @@ export const projects: Project[] = [
       "Architected a full-stack mentorship platform using React and Vite with Tailwind CSS for cross-device compatibility.",
       "Integrated Supabase BaaS for user authentication and real-time database updates.",
       "Implemented dynamic routing and state management for a smooth SPA experience.",
-      "Deployed via Vercel with a CI/CD pipeline for a live production environment.",
+      "Deployed on Vercel for a live environment.",
     ],
     tech: ["React", "Vite", "Tailwind CSS", "Supabase", "Vercel"],
   },
@@ -117,8 +116,18 @@ export const experience: ExperienceItem[] = [
     org: "VIT Vellore",
     period: "2023 – Present",
     bullets: [
-      "Assisted fellow students in mastering core programming concepts in C and Java through informal tutoring sessions.",
+      "Assisted fellow students in mastering core programming concepts and problem-solving through informal tutoring sessions.",
       "Helped peers understand data structures, algorithms, and object-oriented programming fundamentals.",
+    ],
+  },
+  {
+    role: "Robotics & Electronics Intern",
+    org: "Robomations, India",
+    period: "Apr 2022 – May 2022",
+    bullets: [
+      "Engineered hardware systems including an edge detector, a line-follower robot and a battle bot using Arduino Uno, L293D/L298N motor drivers and NRF24L01 wireless RF modules.",
+      "Designed and rendered a 3D architectural model in SketchUp with a VR-viewable walkthrough, using Blender, Gravity Sketch and AutoCAD.",
+      "Applied electronics fundamentals (555 timer circuits, logic gates, LDR and ultrasonic sensors) through breadboard prototyping.",
     ],
   },
 ];
@@ -129,31 +138,3 @@ export const education = {
   degree: "Integrated MTech in Computer Science",
   period: "2023 – 2028",
 };
-
-export interface SkillCategory {
-  category: string;
-  skills: string[];
-}
-
-export const skills: SkillCategory[] = [
-  {
-    category: "Languages",
-    skills: ["Java", "JavaScript", "TypeScript", "Python", "C", "C++", "SQL", "Solidity", "Assembly"],
-  },
-  {
-    category: "Frontend",
-    skills: ["React", "Next.js", "Tailwind CSS", "Three.js", "Framer Motion", "Vite"],
-  },
-  {
-    category: "Backend",
-    skills: ["Node.js", "Flask", "FastAPI", "Hardhat", "Pandas"],
-  },
-  {
-    category: "Tools",
-    skills: ["Git", "Docker", "Figma", "Excel", "OpenCV", "IPFS"],
-  },
-  {
-    category: "Platforms",
-    skills: ["AWS", "Azure", "Supabase", "Vercel", "Ethereum"],
-  },
-];

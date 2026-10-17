@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   X,
@@ -15,6 +15,7 @@ import {
   Check,
 } from "lucide-react";
 import { detailedProjects, type DetailedProject } from "../data/projectDetails";
+import { projectLinks } from "../data/links";
 import { ArchitectureVisualizer } from "./ArchitectureVisualizer";
 
 interface ProjectModalProps {
@@ -69,6 +70,16 @@ export function ProjectModal({
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [projectId, currentIndex, onClose, onSelectProject]);
 
+  const dialogRef = useRef<HTMLDivElement>(null);
+
+  // Move focus into the dialog on open and return it to the trigger on close
+  useEffect(() => {
+    if (!projectId) return;
+    const previous = document.activeElement as HTMLElement | null;
+    dialogRef.current?.focus();
+    return () => previous?.focus?.();
+  }, [projectId]);
+
   const handleCopyCode = (code: string, index: number) => {
     navigator.clipboard.writeText(code);
     setCopiedIndex(index);
@@ -98,6 +109,11 @@ export function ProjectModal({
 
         {/* Modal Dialog Content */}
         <motion.div
+          ref={dialogRef}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="project-modal-title"
+          tabIndex={-1}
           initial={{ opacity: 0, scale: 0.95, y: 15 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95, y: 15 }}
@@ -117,10 +133,10 @@ export function ProjectModal({
                 </span>
                 <span className="text-muted-2 text-xs font-mono">•</span>
                 <span className="text-muted-2 text-xs font-mono">
-                  Case Study 0{currentIndex + 1} of 0{detailedProjects.length}
+                  Case Study {String(currentIndex + 1).padStart(2, "0")} of {String(detailedProjects.length).padStart(2, "0")}
                 </span>
               </div>
-              <h3 className="text-2xl md:text-3xl font-heading text-text font-semibold">
+              <h3 id="project-modal-title" className="text-2xl md:text-3xl font-heading text-text font-semibold">
                 {currentProject.title}
               </h3>
               <p className="text-xs text-muted font-light">
@@ -130,31 +146,41 @@ export function ProjectModal({
 
             {/* Quick Actions & Close */}
             <div className="flex items-center gap-2 self-start sm:self-auto">
-              {currentProject.github && (
-                <a
-                  href={currentProject.github}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-mono text-muted hover:text-text bg-surface border border-border hover:border-accent rounded-lg transition-colors cursor-pointer"
-                  title="View Source on GitHub"
-                >
-                  <Github size={13} />
-                  <span>GitHub</span>
-                </a>
-              )}
+              {(() => {
+                const links = currentProject ? projectLinks[currentProject.id] : undefined;
+                const githubUrl = typeof links?.github === "string" && links.github.trim() !== "" ? links.github : undefined;
+                const demoUrl = typeof links?.demoUrl === "string" && links.demoUrl.trim() !== "" ? links.demoUrl : undefined;
 
-              {currentProject.demoUrl && (
-                <a
-                  href={currentProject.demoUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-mono text-base bg-accent hover:bg-accent-hover font-semibold rounded-lg transition-colors cursor-pointer"
-                  title="View Live Demonstration"
-                >
-                  <ExternalLink size={13} />
-                  <span>Demo</span>
-                </a>
-              )}
+                return (
+                  <>
+                    {githubUrl && (
+                      <a
+                        href={githubUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-mono text-muted hover:text-text bg-surface border border-border hover:border-accent rounded-lg transition-colors cursor-pointer"
+                        title="View Source on GitHub"
+                      >
+                        <Github size={13} />
+                        <span>GitHub</span>
+                      </a>
+                    )}
+
+                    {demoUrl && (
+                      <a
+                        href={demoUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-mono text-[var(--color-base)] bg-accent hover:bg-accent-hover font-semibold rounded-lg transition-colors cursor-pointer"
+                        title="View Live Demonstration"
+                      >
+                        <ExternalLink size={13} />
+                        <span>Demo</span>
+                      </a>
+                    )}
+                  </>
+                );
+              })()}
 
               <button
                 type="button"
@@ -193,7 +219,7 @@ export function ProjectModal({
             >
               <Lightbulb size={14} />
               <span>Engineering Breakthroughs</span>
-              <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-surface-2 text-muted-2">
+              <span className="text-[10px] px-1.5 py-[2px] rounded-full bg-surface-2 text-muted-2">
                 {currentProject.breakthroughs.length}
               </span>
             </button>
@@ -379,7 +405,7 @@ export function ProjectModal({
             </button>
 
             <span className="text-[10px] text-muted-2 hidden sm:inline">
-              Use <kbd className="px-1 py-0.2 rounded bg-surface border border-border text-muted">←</kbd> <kbd className="px-1 py-0.2 rounded bg-surface border border-border text-muted">→</kbd> keys to cycle
+              Use <kbd className="px-1 py-[2px] rounded bg-surface border border-border text-muted">←</kbd> <kbd className="px-1 py-[2px] rounded bg-surface border border-border text-muted">→</kbd> keys to cycle
             </span>
 
             <button

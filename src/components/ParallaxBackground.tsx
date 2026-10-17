@@ -1,53 +1,63 @@
 import { useEffect, useRef } from "react";
 
+/**
+ * Full-screen marble background with a subtle scroll parallax.
+ * Previously ran a requestAnimationFrame loop forever (~59 callbacks/s while idle)
+ * and animated background-position (a paint on every frame). Now it moves a
+ * GPU-composited layer with transform, and only runs frames while it is moving.
+ */
 export function ParallaxBackground() {
-  const bgRef = useRef<HTMLDivElement>(null);
-  const currentY = useRef(50);
-  const targetY = useRef(50);
-  const rafRef = useRef<number>(0);
+  const layerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
+    const layer = layerRef.current;
+    if (!layer) return;
 
-    // Continuous animation loop — smoothly chases the target position each frame
-    const animate = () => {
-      currentY.current = lerp(currentY.current, targetY.current, 0.06);
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const MAX_SHIFT = 120; // px, matches the layer's overscan below
+    let target = 0;
+    let current = 0;
+    let raf = 0;
 
-      if (bgRef.current) {
-        bgRef.current.style.backgroundPositionY = `${currentY.current}%`;
-      }
-
-      rafRef.current = requestAnimationFrame(animate);
+    const frame = () => {
+      current += (target - current) * 0.08;
+      if (Math.abs(target - current) < 0.1) current = target;
+      layer.style.transform = `translate3d(0, ${(-current).toFixed(2)}px, 0)`;
+      raf = current === target ? 0 : requestAnimationFrame(frame);
     };
 
-    const handleScroll = () => {
-      targetY.current = 50 + window.scrollY * 0.012;
+    const onScroll = () => {
+      target = reduceMotion.matches ? 0 : Math.min(window.scrollY * 0.05, MAX_SHIFT);
+      if (!raf) raf = requestAnimationFrame(frame);
     };
 
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    rafRef.current = requestAnimationFrame(animate);
-
+    window.addEventListener("scroll", onScroll, { passive: true });
+    onScroll();
     return () => {
-      window.removeEventListener("scroll", handleScroll);
-      cancelAnimationFrame(rafRef.current);
+      window.removeEventListener("scroll", onScroll);
+      cancelAnimationFrame(raf);
     };
   }, []);
 
   return (
     <div
-      ref={bgRef}
-      style={{
-        position: "fixed",
-        inset: 0,
-        zIndex: 0,
-        pointerEvents: "none",
-        backgroundImage: "url('/1.jpg')",
-        backgroundSize: "cover",
-        backgroundPositionX: "center",
-        backgroundPositionY: "50%",
-        willChange: "background-position",
-      }}
+      aria-hidden="true"
+      style={{ position: "fixed", inset: 0, zIndex: 0, pointerEvents: "none", overflow: "hidden" }}
     >
+      <div
+        ref={layerRef}
+        style={{
+          position: "absolute",
+          top: -120,
+          bottom: -120,
+          left: 0,
+          right: 0,
+          backgroundImage: "url('/bg-marble.webp')",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          willChange: "transform",
+        }}
+      />
       {/* Dark overlay so text stays readable */}
       <div
         style={{

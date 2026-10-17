@@ -11,16 +11,14 @@ import {
   Mail,
   Home,
   Briefcase,
-  Terminal,
   Github,
   Linkedin,
   Sparkles,
-  Eye,
-  Sliders,
   FileText,
 } from "lucide-react";
 import { personalInfo, projects } from "../data/resume";
 import { techSkills } from "../data/techMatrixData";
+import { contactConfig } from "../data/contact";
 import { showToast } from "../utils/toast";
 
 interface CommandItem {
@@ -39,10 +37,6 @@ interface CommandPaletteProps {
   onNavigate?: (id: string, label?: string) => void;
   asciiLensEnabled?: boolean;
   onToggleAsciiLens?: () => void;
-  asciiCharset?: "ascii" | "binary" | "blocks";
-  onSetAsciiCharset?: (charset: "ascii" | "binary" | "blocks") => void;
-  asciiRadius?: number;
-  onSetAsciiRadius?: (radius: number) => void;
   onSelectSkill?: (skill: string) => void;
   onOpenProjectModal?: (projectId: string) => void;
   onOpenResume?: () => void;
@@ -54,10 +48,6 @@ export function CommandPalette({
   onNavigate,
   asciiLensEnabled = true,
   onToggleAsciiLens,
-  asciiCharset = "ascii",
-  onSetAsciiCharset,
-  asciiRadius = 0.14,
-  onSetAsciiRadius,
   onSelectSkill,
   onOpenProjectModal,
   onOpenResume,
@@ -116,7 +106,7 @@ export function CommandPalette({
       id: "nav-experience",
       category: "Navigation",
       title: "Experience",
-      subtitle: "Roles & mentorship journey",
+      subtitle: "Internship, club and mentoring roles",
       icon: <Briefcase size={16} className="text-accent" />,
       action: () => scrollTo("experience", "Experience"),
     },
@@ -171,121 +161,74 @@ export function CommandPalette({
     })),
 
     // Contact & Social
-    {
-      id: "act-copy-email",
-      category: "Contact & Social",
-      title: "Copy Email Address",
-      subtitle: personalInfo.email,
-      icon: <Copy size={16} className="text-accent" />,
-      shortcut: "↵",
-      action: () => {
-        navigator.clipboard.writeText(personalInfo.email);
-        showToast(`Copied ${personalInfo.email} to clipboard!`);
-        onClose();
-      },
-    },
-    {
-      id: "act-github",
-      category: "Contact & Social",
-      title: "Open GitHub Profile",
-      subtitle: personalInfo.github,
-      icon: <Github size={16} className="text-muted" />,
-      action: () => {
-        window.open(personalInfo.github, "_blank");
-        onClose();
-      },
-    },
-    {
-      id: "act-linkedin",
-      category: "Contact & Social",
-      title: "Open LinkedIn Profile",
-      subtitle: personalInfo.linkedin,
-      icon: <Linkedin size={16} className="text-muted" />,
-      action: () => {
-        window.open(personalInfo.linkedin, "_blank");
-        onClose();
-      },
-    },
+    ...(contactConfig.showEmail
+      ? [
+          {
+            id: "act-copy-email",
+            category: "Contact & Social" as const,
+            title: "Copy Email Address",
+            subtitle: personalInfo.email,
+            icon: <Copy size={16} className="text-accent" />,
+            shortcut: "↵",
+            action: () => {
+              navigator.clipboard.writeText(personalInfo.email);
+              showToast(`Copied ${personalInfo.email} to clipboard!`);
+              onClose();
+            },
+          },
+        ]
+      : []),
+    ...(contactConfig.showGithub
+      ? [
+          {
+            id: "act-github",
+            category: "Contact & Social" as const,
+            title: "Open GitHub Profile",
+            subtitle: personalInfo.github,
+            icon: <Github size={16} className="text-muted" />,
+            action: () => {
+              window.open(personalInfo.github, "_blank");
+              onClose();
+            },
+          },
+        ]
+      : []),
+    ...(contactConfig.showLinkedin
+      ? [
+          {
+            id: "act-linkedin",
+            category: "Contact & Social" as const,
+            title: "Open LinkedIn Profile",
+            subtitle: personalInfo.linkedin,
+            icon: <Linkedin size={16} className="text-muted" />,
+            action: () => {
+              window.open(personalInfo.linkedin, "_blank");
+              onClose();
+            },
+          },
+        ]
+      : []),
 
     // ASCII Lens Commands
     {
       id: "cmd-toggle-asciify",
       category: "Commands",
-      title: asciiLensEnabled ? "Disable ASCII Cursor Lens" : "Enable ASCII Cursor Lens",
-      subtitle: `Status: ${asciiLensEnabled ? "Active" : "Paused"} • Radius: ${Math.round(asciiRadius * 100)}% [Compact]`,
+      title: asciiLensEnabled ? "Turn off cursor effect" : "Turn on cursor effect",
+      subtitle: `Background text effect is ${asciiLensEnabled ? "on" : "off"}`,
       icon: <Sparkles size={16} className="text-accent" />,
       action: () => {
         if (onToggleAsciiLens) onToggleAsciiLens();
-        showToast(asciiLensEnabled ? "ASCII Cursor Lens paused" : "ASCII Cursor Lens activated");
-        onClose();
-      },
-    },
-    {
-      id: "cmd-ascii-mode-ascii",
-      category: "Commands",
-      title: "Set ASCII Charset: Standard ASCII",
-      subtitle: "Dense text glyphs with champagne glow",
-      icon: <Eye size={16} className={asciiCharset === "ascii" ? "text-accent" : "text-muted"} />,
-      action: () => {
-        if (onSetAsciiCharset) onSetAsciiCharset("ascii");
-        showToast("ASCII Lens mode: Standard ASCII");
-        onClose();
-      },
-    },
-    {
-      id: "cmd-ascii-mode-binary",
-      category: "Commands",
-      title: "Set ASCII Charset: Binary Matrix (0 / 1)",
-      subtitle: "Systems & low-level memory inspection aesthetic",
-      icon: <Terminal size={16} className={asciiCharset === "binary" ? "text-accent" : "text-muted"} />,
-      action: () => {
-        if (onSetAsciiCharset) onSetAsciiCharset("binary");
-        showToast("ASCII Lens mode: Binary (0 / 1)");
-        onClose();
-      },
-    },
-    {
-      id: "cmd-ascii-radius-compact",
-      category: "Commands",
-      title: "Set ASCII Radius: Compact Focus (14%)",
-      subtitle: "Small surgical spotlight lens (Recommended)",
-      icon: <Sliders size={16} className="text-accent" />,
-      action: () => {
-        if (onSetAsciiRadius) onSetAsciiRadius(0.14);
-        showToast("ASCII Lens radius set to 14% (Compact)");
-        onClose();
-      },
-    },
-    {
-      id: "cmd-ascii-radius-ultra-compact",
-      category: "Commands",
-      title: "Set ASCII Radius: Ultra-Compact (10%)",
-      subtitle: "Tight cursor halo lens",
-      icon: <Sliders size={16} className="text-muted" />,
-      action: () => {
-        if (onSetAsciiRadius) onSetAsciiRadius(0.10);
-        showToast("ASCII Lens radius set to 10% (Ultra-Compact)");
+        showToast(asciiLensEnabled ? "Cursor effect turned off" : "Cursor effect turned on");
         onClose();
       },
     },
 
     // Quick Command
     {
-      id: "cmd-whoami",
-      category: "Commands",
-      title: "whoami",
-      subtitle: `${personalInfo.name} — ${personalInfo.role}`,
-      icon: <Terminal size={16} className="text-accent" />,
-      action: () => {
-        showToast(`${personalInfo.name} • ${personalInfo.role} (${personalInfo.location})`);
-        onClose();
-      },
-    },
-    {
       id: "act-resume",
       category: "Commands",
       title: "View Curriculum Vitae / Resume",
-      subtitle: "In-browser publication layout, official PDF & ATS markdown",
+      subtitle: "Preview, download the PDF, or copy plain text",
       icon: <FileText size={16} className="text-accent" />,
       action: () => {
         onClose();

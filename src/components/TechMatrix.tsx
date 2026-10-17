@@ -13,6 +13,7 @@ import {
   Binary,
 } from "lucide-react";
 import { techSkills, domainFilters, type TechDomain } from "../data/techMatrixData";
+import { projects } from "../data/resume";
 
 interface TechMatrixProps {
   selectedSkill: string | null;
@@ -113,6 +114,7 @@ export function TechMatrix({
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
+                aria-label="Filter technologies and projects"
                 placeholder="Filter by skill or project..."
                 className="w-full pl-9 pr-8 py-2 text-xs bg-surface-2/90 border border-border focus:border-accent text-text placeholder:text-muted-2 rounded-lg outline-none font-sans transition-colors"
               />
@@ -137,6 +139,7 @@ export function TechMatrix({
               <button
                 key={df.id}
                 onClick={() => setActiveDomain(df.id)}
+                aria-pressed={isActive}
                 className={`relative px-4 py-2 text-xs font-mono tracking-wider uppercase rounded-lg transition-all duration-300 flex items-center gap-2 whitespace-nowrap cursor-pointer ${
                   isActive
                     ? "text-accent bg-accent/10 border border-accent/40 font-semibold shadow-sm"
@@ -148,7 +151,7 @@ export function TechMatrix({
                 </span>
                 <span>{df.shortLabel}</span>
                 <span
-                  className={`text-[10px] px-1.5 py-0.2 rounded-full ${
+                  className={`text-[10px] px-1.5 py-[2px] rounded-full ${
                     isActive ? "bg-accent/20 text-accent" : "bg-surface border border-border text-muted-2"
                   }`}
                 >
@@ -213,7 +216,7 @@ export function TechMatrix({
                     </button>
                   ))}
                   <span className="text-[11px] text-muted-2 italic ml-auto hidden sm:inline">
-                    Click a project to scroll directly to its engineering breakdown
+                    Click a project to open its engineering breakdown
                   </span>
                 </div>
               </div>
@@ -234,6 +237,15 @@ export function TechMatrix({
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "100px" }}
                 transition={{ duration: 0.35, delay: index * 0.03 }}
+                role="button"
+                tabIndex={0}
+                aria-pressed={isSelected}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    onSelectSkill(isSelected ? null : skill.name);
+                  }
+                }}
                 onClick={() => {
                   onSelectSkill(isSelected ? null : skill.name);
                 }}
@@ -312,9 +324,9 @@ export function TechMatrix({
         {/* Footer Spectrum Stat Bar */}
         <div className="mt-14 pt-6 border-t border-border/70 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-mono text-muted-2">
           <div className="flex items-center gap-4 flex-wrap">
-            <span>24 Production Technologies</span>
+            <span>{techSkills.length} Technologies</span>
             <span>•</span>
-            <span>5 Full-Stack Case Studies</span>
+            <span>{projects.length} Case Studies</span>
             <span>•</span>
             <span>Cross-Project Linked</span>
           </div>
